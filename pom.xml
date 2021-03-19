@@ -14,7 +14,6 @@
   <version>1.0.0-SNAPSHOT</version>
   <name>edge-common-spring</name>
   <description>A shared library/framework for edge APIs for spring way modules</description>
-  <packaging>jar</packaging>
 
   <licenses>
     <license>
@@ -26,6 +25,8 @@
   <properties>
     <java.version>11</java.version>
     <folio-spring-base-version>1.0.4</folio-spring-base-version>
+    <edge-api-utils-version>1.0.0-SNAPSHOT</edge-api-utils-version>
+    <wiremock-version>2.27.2</wiremock-version>
   </properties>
 
   <dependencies>
@@ -33,6 +34,28 @@
       <groupId>org.folio</groupId>
       <artifactId>folio-spring-base</artifactId>
       <version>${folio-spring-base-version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.liquibase</groupId>
+          <artifactId>liquibase-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.folio</groupId>
+      <artifactId>edge-api-utils</artifactId>
+      <version>${edge-api-utils-version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-to-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -63,6 +86,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-standalone</artifactId>
+      <version>2.27.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
