@@ -5,11 +5,7 @@ import static org.folio.edge.api.utils.Constants.DEFAULT_SECURE_STORE_TYPE;
 import static org.folio.edge.api.utils.Constants.PROP_SECURE_STORE_TYPE;
 import static org.folio.edge.api.utils.Constants.X_OKAPI_TOKEN;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
-import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +20,7 @@ import org.folio.edgecommonspring.client.AuthnClient;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.folio.edgecommonspring.util.ApiKeyUtils;
+import org.folio.edgecommonspring.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,7 +30,6 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class SecurityManagerService {
 
-  private static final Pattern isURL = Pattern.compile("(?i)^http[s]?://.*");
   @Autowired
   private final AuthnClient authnClient;
   private SecureStore secureStore;
@@ -49,32 +45,6 @@ public class SecurityManagerService {
   @Value("${token_cache_capacity}")
   private int cacheCapacity;
 
-  private static Properties getProperties(String secureStorePropFile) {
-    Properties secureStoreProps = new Properties();
-
-    log.info("Attempt to load properties from: " + secureStorePropFile);
-
-    if (secureStorePropFile != null) {
-      URL url = null;
-      try {
-        if (isURL.matcher(secureStorePropFile).matches()) {
-          url = new URL(secureStorePropFile);
-        }
-
-        try (
-          InputStream in = url == null ? new FileInputStream(secureStorePropFile) : url.openStream()) {
-          secureStoreProps.load(in);
-          log.info("Successfully loaded properties from: " + secureStorePropFile);
-        }
-      } catch (Exception e) {
-        throw new AuthorizationException("Failed to load secure store properties");
-      }
-    } else {
-      log.warn("No secure store properties file specified. Using defaults");
-    }
-    return secureStoreProps;
-  }
-
   @PostConstruct
   public void init() {
     if (null == tokenCache) {
@@ -83,7 +53,7 @@ public class SecurityManagerService {
       log.info("Using token cache capacity: {}", cacheCapacity);
       tokenCache = TokenCache.initialize(cacheTtlMs, failureCacheTtlMs, cacheCapacity);
     }
-    Properties secureStoreProps = getProperties(secureStorePropsFile);
+    Properties secureStoreProps = PropertiesUtil.getProperties(secureStorePropsFile);
     String type = secureStoreProps.getProperty(PROP_SECURE_STORE_TYPE, DEFAULT_SECURE_STORE_TYPE);
     secureStore = SecureStoreFactory.getSecureStore(type, secureStoreProps);
   }
@@ -125,6 +95,7 @@ public class SecurityManagerService {
     ConnectionSystemParameters connectionSystemParameters = buildLoginRequest(salt, tenantId, username);
     String token = loginAndGetToken(connectionSystemParameters, tenantId);
     connectionSystemParameters.setOkapiToken(token);
+    tokenCache.put(salt, tenantId, username, token);
     return connectionSystemParameters;
   }
 
@@ -147,7 +118,8 @@ public class SecurityManagerService {
         .build();
     } catch (NotFoundException e) {
       log.error("Exception retrieving password", e);
-      throw new AuthorizationException("Cannot get system connection properties for: " + tenantId);
+      throw new AuthorizationException(String
+        .format("Cannot get system connection properties for user with name: %s, for tenant: %s", username, tenantId));
     }
   }
 

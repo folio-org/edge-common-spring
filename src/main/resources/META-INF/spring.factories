@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.folio.edgecommonspring.config.EdgeSharedConfiguration,\
   org.folio.edgecommonspring.config.FeignClientConfiguration
