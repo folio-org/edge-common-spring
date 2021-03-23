@@ -7,6 +7,8 @@ This software is distributed under the terms of the Apache License, Version 2.0.
 ## Introduction
 
 This is a shared library/framework for edge APIs for spring way modules.
+This module is a port of [edge-common](https://github.com/folio-org/edge-common), and main goal is feature parity with that framework. 
+From a hosting/SysOps perspective, edge modules developed with this framework should be indistinguishable from those developed using edge-common.
 
 ## Overview
 The intent of edge-common-spring is to simplify the implementation of edge APIs by providing much of the boilerplate code shared among these APIs.
