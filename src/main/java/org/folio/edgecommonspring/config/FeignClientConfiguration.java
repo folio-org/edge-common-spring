@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.clientconfig.OkHttpFeignConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Import;
 @Import(OkHttpFeignConfiguration.class)
 public class FeignClientConfiguration {
 
+  @Bean
   public Client enrichHeadersClient(@Autowired okhttp3.OkHttpClient okHttpClient) {
     return new EnrichUrlClient(okHttpClient);
   }
