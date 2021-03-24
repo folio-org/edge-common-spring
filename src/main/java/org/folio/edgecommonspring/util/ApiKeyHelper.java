@@ -37,7 +37,7 @@ public class ApiKeyHelper {
         apiKey = getFromParam(servletRequest);
       } else if (ApiKeySource.HEADER == source) {
         apiKey = getFromHeader(servletRequest);
-      } else if(ApiKeySource.PATH == source) {
+      } else if (ApiKeySource.PATH == source) {
         apiKey = getFromPath(servletRequest);
       }
       if (apiKey != null) {
