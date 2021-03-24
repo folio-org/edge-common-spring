@@ -1,5 +1,9 @@
 package org.folio.edgecommonspring.filter;
 
+import static org.folio.edgecommonspring.filter.EdgeSecurityFilter.HEALTH_ENDPOINT;
+import static org.folio.edgecommonspring.filter.EdgeSecurityFilter.INFO_ENDPOINT;
+import static org.folio.edgecommonspring.filter.EdgeSecurityFilter.PROXY_ENDPOINTS;
+import static org.folio.edgecommonspring.filter.EdgeSecurityFilter.TENANT_ENDPOINTS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,6 +27,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -89,26 +95,12 @@ class EdgeSecurityFilterTest {
     Assertions.assertEquals("Edge API key not found in the request", exception.getMessage());
   }
 
-  @Test
-  void testDoFilter_shouldNotCreateParams_whenHealthEndpoint() throws IOException, ServletException {
+  @ParameterizedTest
+  @ValueSource(strings = {HEALTH_ENDPOINT, TENANT_ENDPOINTS, INFO_ENDPOINT, PROXY_ENDPOINTS})
+  void testDoFilter_shouldNotCreateParams_whenAuthorizationNotNeeded(String endpoint) throws IOException, ServletException {
     //given
 
-    when((request).getServletPath()).thenReturn(EdgeSecurityFilter.HEALTH_ENDPOINT);
-    when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-
-    // when
-    edgeSecurityFilter.doFilter(request, response, filterChain);
-
-    // then
-    Mockito.verify(apiKeyHelper, never()).getEdgeApiKey(any(ServletRequest.class));
-    Mockito.verify(securityManagerService, never()).getParamsWithToken(anyString());
-  }
-
-  @Test
-  void testDoFilter_shouldNotCreateParams_whenInfoEndpoint() throws IOException, ServletException {
-    //given
-
-    when((request).getServletPath()).thenReturn(EdgeSecurityFilter.INFO_ENDPOINT);
+    when((request).getServletPath()).thenReturn(endpoint);
     when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
     // when

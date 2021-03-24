@@ -27,6 +27,8 @@ public class EdgeSecurityFilter extends GenericFilterBean {
 
   public static final String HEALTH_ENDPOINT = "/admin/health";
   public static final String INFO_ENDPOINT = "/admin/info";
+  public static final String TENANT_ENDPOINTS = "/_/tenant";
+  public static final String PROXY_ENDPOINTS = "/_/proxy";
   private final SecurityManagerService securityManagerService;
   private final ApiKeyHelper apiKeyHelper;
 
@@ -55,6 +57,6 @@ public class EdgeSecurityFilter extends GenericFilterBean {
   }
 
   private boolean isAuthorizationNeeded(String path) {
-    return !(path.contains(HEALTH_ENDPOINT) || path.equals(INFO_ENDPOINT));
+    return !(path.contains(HEALTH_ENDPOINT) || path.contains(TENANT_ENDPOINTS) || path.contains(PROXY_ENDPOINTS) || path.equals(INFO_ENDPOINT));
   }
 }
