@@ -1,8 +1,10 @@
 package org.folio.edgecommonspring.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -30,7 +32,7 @@ class ApiKeyHelperTest {
 
     String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
 
-    Assertions.assertEquals("testKeyHeader", apiKey);
+    assertEquals("testKeyHeader", apiKey);
 
   }
 
@@ -45,7 +47,7 @@ class ApiKeyHelperTest {
 
     String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
 
-    Assertions.assertEquals("testKeyPath", apiKey);
+    assertEquals("testKeyPath", apiKey);
 
   }
 
@@ -60,7 +62,20 @@ class ApiKeyHelperTest {
 
     String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
 
-    Assertions.assertEquals("testKeyParam", apiKey);
+    assertEquals("testKeyParam", apiKey);
 
+  }
+
+  @Test
+  void shouldReturnNull() {
+    ReflectionTestUtils
+      .setField(apiKeyHelper, "apiKeySources", "PARAM");
+    apiKeyHelper.init();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    ServletRequest servletRequest = new HttpServletRequestWrapper(request);
+
+    String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
+
+    assertNull(apiKey);
   }
 }
