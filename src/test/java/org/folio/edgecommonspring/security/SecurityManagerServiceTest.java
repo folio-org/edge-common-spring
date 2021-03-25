@@ -40,7 +40,6 @@ class SecurityManagerServiceTest {
   void before() {
     ReflectionTestUtils
       .setField(securityManagerService, "secureStorePropsFile", "src/test/resources/ephemeral.properties");
-
   }
 
   @Test
