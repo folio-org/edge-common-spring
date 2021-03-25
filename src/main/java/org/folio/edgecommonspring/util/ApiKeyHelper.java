@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequest;
-import org.apache.catalina.connector.RequestFacade;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +53,7 @@ public class ApiKeyHelper {
 
   private String getFromHeader(ServletRequest servletRequest) {
 
-    String full = ((RequestFacade) servletRequest).getHeader(HEADER_API_KEY);
+    String full = ((HttpServletRequest) servletRequest).getHeader(HEADER_API_KEY);
 
     if (full == null || full.isEmpty()) {
       return null;
