@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class ApiKeyHelper {
 
   public static final Pattern AUTH_TYPE = Pattern.compile("(?i).*apikey (\\w*).*");
-  @Value("${api_key_sources}")
+  @Value("${api_key_sources:PARAM,HEADER,PATH}")
   private String apiKeySources;
   private List<ApiKeySource> sources;
 

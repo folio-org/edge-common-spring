@@ -34,15 +34,15 @@ public class SecurityManagerService {
   private final AuthnClient authnClient;
   private SecureStore secureStore;
   private TokenCache tokenCache;
-  @Value("${secure_store}")
+  @Value("${secure_store:Ephemeral}")
   private String secureStoreType;
-  @Value("${secure_store_props}")
+  @Value("${secure_store_props:src/main/resources/ephemeral.properties}")
   private String secureStorePropsFile;
-  @Value("${token_cache_ttl_ms}")
+  @Value("${token_cache_ttl_ms:3636000}")
   private long cacheTtlMs;
-  @Value("${null_token_cache_ttl_ms}")
+  @Value("${null_token_cache_ttl_ms:30000}")
   private long failureCacheTtlMs;
-  @Value("${token_cache_capacity}")
+  @Value("${token_cache_capacity:100}")
   private int cacheCapacity;
 
   @PostConstruct
@@ -75,7 +75,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters getParamsDependingOnCachePresent(String salt, String tenantId,
-    String username) {
+                                                                      String username) {
     try {
       TokenCache cache = TokenCache.getInstance();
       String token = cache.get(salt, tenantId, username);
@@ -91,7 +91,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters buildRequiredOkapiHeadersWithToken(String salt, String tenantId,
-    String username) {
+                                                                        String username) {
     ConnectionSystemParameters connectionSystemParameters = buildLoginRequest(salt, tenantId, username);
     String token = loginAndGetToken(connectionSystemParameters, tenantId);
     connectionSystemParameters.setOkapiToken(token);
@@ -109,7 +109,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters buildLoginRequest(String salt, String tenantId,
-    String username) {
+                                                       String username) {
     try {
       return ConnectionSystemParameters.builder()
         .tenantId(tenantId)

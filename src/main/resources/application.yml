@@ -1,14 +1,3 @@
-Dokapi_url: http://localhost:9130
-okapi_url: ${Dokapi_url}
-Dsecure_store_props: src/main/resources/ephemeral.properties
-secure_store_props: ${Dsecure_store_props}
-secure_store: Ephemeral
-api_key_sources: PARAM,HEADER,PATH
-token_cache_ttl_ms: 3636000
-null_token_cache_ttl_ms: 30000
-token_cache_capacity: 100
-
-
 feign:
   client:
     config:
