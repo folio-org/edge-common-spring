@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.catalina.connector.RequestFacade;
+import org.apache.commons.lang3.ArrayUtils;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.domain.entity.RequestWithHeaders;
 import org.folio.edgecommonspring.exception.AuthorizationException;
@@ -36,6 +37,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
@@ -64,8 +66,11 @@ class EdgeSecurityFilterTest {
   @Test
   void testDoFilter_shouldSetTokenToHeaders() throws IOException, ServletException {
     // given
+    ReflectionTestUtils
+      .setField(edgeSecurityFilter, "excludeBasePaths", ArrayUtils.EMPTY_STRING_ARRAY);
     when((request).getServletPath()).thenReturn("/tests");
     when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+    when((request).getRequestURI()).thenReturn("/tests");
     ConnectionSystemParameters connectionSystemParameters = new ConnectionSystemParameters()
       .withTenantId(TENANT)
       .withOkapiToken(MOCK_TOKEN);
@@ -85,9 +90,11 @@ class EdgeSecurityFilterTest {
   @Test
   void testDoFilter_shouldThrowAuthorizationException() throws IOException, ServletException {
     //given
-
+    ReflectionTestUtils
+      .setField(edgeSecurityFilter, "excludeBasePaths", new String[]{"/admin"});
     when((request).getServletPath()).thenReturn("/tests");
     when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+    when((request).getRequestURI()).thenReturn("/tests");
 
     // when & then
     AuthorizationException exception = Assertions.assertThrows(AuthorizationException.class,
@@ -97,11 +104,15 @@ class EdgeSecurityFilterTest {
 
   @ParameterizedTest
   @ValueSource(strings = {HEALTH_ENDPOINT, TENANT_ENDPOINTS, INFO_ENDPOINT, PROXY_ENDPOINTS})
-  void testDoFilter_shouldNotCreateParams_whenAuthorizationNotNeeded(String endpoint) throws IOException, ServletException {
+  void testDoFilter_shouldNotCreateParams_whenAuthorizationNotNeeded(String endpoint)
+    throws IOException, ServletException {
     //given
-
+    ReflectionTestUtils
+      .setField(edgeSecurityFilter, "excludeBasePaths",
+        new String[]{"/admin/health", "/admin/info", "/_/tenant", "/_/proxy"});
     when((request).getServletPath()).thenReturn(endpoint);
     when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+    when((request).getRequestURI()).thenReturn("/_/proxy/tenants/test/upgrade?tenantParameters=loadReference=true");
 
     // when
     edgeSecurityFilter.doFilter(request, response, filterChain);

@@ -21,7 +21,6 @@ import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.folio.edgecommonspring.util.ApiKeyUtils;
 import org.folio.edgecommonspring.util.PropertiesUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class SecurityManagerService {
 
-  @Autowired
   private final AuthnClient authnClient;
   private SecureStore secureStore;
   private TokenCache tokenCache;
@@ -75,7 +73,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters getParamsDependingOnCachePresent(String salt, String tenantId,
-                                                                      String username) {
+    String username) {
     try {
       TokenCache cache = TokenCache.getInstance();
       String token = cache.get(salt, tenantId, username);
@@ -91,7 +89,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters buildRequiredOkapiHeadersWithToken(String salt, String tenantId,
-                                                                        String username) {
+    String username) {
     ConnectionSystemParameters connectionSystemParameters = buildLoginRequest(salt, tenantId, username);
     String token = loginAndGetToken(connectionSystemParameters, tenantId);
     connectionSystemParameters.setOkapiToken(token);
@@ -109,7 +107,7 @@ public class SecurityManagerService {
   }
 
   private ConnectionSystemParameters buildLoginRequest(String salt, String tenantId,
-                                                       String username) {
+    String username) {
     try {
       return ConnectionSystemParameters.builder()
         .tenantId(tenantId)

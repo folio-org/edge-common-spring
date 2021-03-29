@@ -13,6 +13,15 @@ From a hosting/SysOps perspective, edge modules developed with this framework sh
 ## Overview
 The intent of edge-common-spring is to simplify the implementation of edge APIs by providing much of the boilerplate code shared among these APIs.
 
+### How to use this framework
+All spring way edge modules, that will use this library, should add it as a dependency. 
+After that, all requests that will call the edge module will go through the request filter from the library. 
+As a result, incoming request will contain ***x-okapi-token*** in the header, and the edge module will be able to invoke folio modules.
+
+By default, filter will make authorization and receive the ***x-okapi-token*** header only if the requested URL does not start with: /admin/health, admin/info, /_/tenant, /_/proxy.
+The array of endpoints that need to be excluded can be overriden, for example:
+ -D***header.edge.validation.exclude***="/firstRequiredEndpointToExclude, /secondRequiredEndpointToExclude".
+
 ### Issue tracker
 
 See project [EDGCMNSPR](https://issues.folio.org/browse/EDGCMNSPR)
