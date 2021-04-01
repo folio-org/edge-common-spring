@@ -18,7 +18,7 @@ All spring way edge modules, that will use this library, should add it as a depe
 After that, all requests that will call the edge module will go through the request filter from the library. 
 As a result, incoming request will contain ***x-okapi-token*** in the header, and the edge module will be able to invoke folio modules.
 
-By default, filter will make authorization and receive the ***x-okapi-token*** header only if the requested URL does not start with: /admin/health, admin/info, /_/tenant, /_/proxy.
+By default, filter will make authorization and receive the ***x-okapi-token*** header only if the requested URL does not start with: /admin/health, admin/info, /_/tenant.
 The array of endpoints that need to be excluded can be overriden, for example:
  -D***header.edge.validation.exclude***="/firstRequiredEndpointToExclude, /secondRequiredEndpointToExclude".
 

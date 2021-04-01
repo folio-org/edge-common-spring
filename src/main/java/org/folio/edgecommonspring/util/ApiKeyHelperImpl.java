@@ -11,11 +11,12 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import org.folio.edge.api.utils.util.ApiKeyHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ApiKeyHelper {
+public class ApiKeyHelperImpl implements ApiKeyHelper {
 
   public static final Pattern AUTH_TYPE = Pattern.compile("(?i).*apikey (\\w*).*");
   @Value("${api_key_sources:PARAM,HEADER,PATH}")
@@ -30,29 +31,13 @@ public class ApiKeyHelper {
     }
   }
 
-  public String getEdgeApiKey(ServletRequest servletRequest) {
-    for (ApiKeySource source : sources) {
-      String apiKey = null;
-      if (ApiKeySource.PARAM == source) {
-        apiKey = getFromParam(servletRequest);
-      } else if (ApiKeySource.HEADER == source) {
-        apiKey = getFromHeader(servletRequest);
-      } else if (ApiKeySource.PATH == source) {
-        apiKey = getFromPath(servletRequest);
-      }
-      if (apiKey != null) {
-        return apiKey;
-      }
-    }
-    return null;
+  @Override
+  public String getFromParam(Object servletRequest) {
+    return ((ServletRequest) servletRequest).getParameter(PARAM_API_KEY);
   }
 
-  private String getFromParam(ServletRequest servletRequest) {
-    return servletRequest.getParameter(PARAM_API_KEY);
-  }
-
-  private String getFromHeader(ServletRequest servletRequest) {
-
+  @Override
+  public String getFromHeader(Object servletRequest) {
     String full = ((HttpServletRequest) servletRequest).getHeader(HEADER_API_KEY);
 
     if (full == null || full.isEmpty()) {
@@ -67,11 +52,13 @@ public class ApiKeyHelper {
     }
   }
 
-  private String getFromPath(ServletRequest servletRequest) {
-    return servletRequest.getParameter(PATH_API_KEY);
+  @Override
+  public String getFromPath(Object servletRequest) {
+    return ((ServletRequest) servletRequest).getParameter(PATH_API_KEY);
   }
 
-  public enum ApiKeySource {
-    PARAM, HEADER, PATH
+  public List<ApiKeySource> getSources() {
+    return sources;
   }
+
 }

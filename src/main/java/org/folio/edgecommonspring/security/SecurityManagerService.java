@@ -16,11 +16,11 @@ import org.folio.edge.api.utils.model.ClientInfo;
 import org.folio.edge.api.utils.security.SecureStore;
 import org.folio.edge.api.utils.security.SecureStore.NotFoundException;
 import org.folio.edge.api.utils.security.SecureStoreFactory;
+import org.folio.edge.api.utils.util.ApiKeyParser;
+import org.folio.edge.api.utils.util.PropertiesUtil;
 import org.folio.edgecommonspring.client.AuthnClient;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.exception.AuthorizationException;
-import org.folio.edgecommonspring.util.ApiKeyUtils;
-import org.folio.edgecommonspring.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -61,12 +61,12 @@ public class SecurityManagerService {
     String username;
     String salt;
     try {
-      ClientInfo clientInfo = ApiKeyUtils.parseApiKey(edgeApiKey);
+      ClientInfo clientInfo = ApiKeyParser.parseApiKey(edgeApiKey);
       tenantId = clientInfo.tenantId;
       username = clientInfo.username;
       salt = clientInfo.salt;
 
-    } catch (ApiKeyUtils.MalformedApiKeyException e) {
+    } catch (ApiKeyParser.MalformedApiKeyException e) {
       throw new AuthorizationException("Malformed edge api key: " + edgeApiKey);
     }
     return getParamsDependingOnCachePresent(salt, tenantId, username);
@@ -85,6 +85,7 @@ public class SecurityManagerService {
     } catch (NotInitializedException e) {
       log.warn("Failed to access TokenCache", e);
     }
+    log.debug("No token in cache, started process of fetching token");
     return buildRequiredOkapiHeadersWithToken(salt, tenantId, username);
   }
 
@@ -94,6 +95,7 @@ public class SecurityManagerService {
     String token = loginAndGetToken(connectionSystemParameters, tenantId);
     connectionSystemParameters.setOkapiToken(token);
     tokenCache.put(salt, tenantId, username, token);
+    log.debug("Successfully fetched token and put in cache");
     return connectionSystemParameters;
   }
 

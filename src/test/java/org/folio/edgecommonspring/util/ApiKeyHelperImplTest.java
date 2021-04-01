@@ -16,21 +16,21 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ApiKeyHelperTest {
+class ApiKeyHelperImplTest {
 
   @InjectMocks
-  private ApiKeyHelper apiKeyHelper;
+  private ApiKeyHelperImpl apiKeyHelperImpl;
 
   @Test
   void testHeaderOnly() {
     ReflectionTestUtils
-      .setField(apiKeyHelper, "apiKeySources", "HEADER");
-    apiKeyHelper.init();
+      .setField(apiKeyHelperImpl, "apiKeySources", "HEADER");
+    apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("Authorization", "testKeyHeader");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
-    String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
 
     assertEquals("testKeyHeader", apiKey);
 
@@ -39,13 +39,13 @@ class ApiKeyHelperTest {
   @Test
   void testPathOnly() {
     ReflectionTestUtils
-      .setField(apiKeyHelper, "apiKeySources", "PATH");
-    apiKeyHelper.init();
+      .setField(apiKeyHelperImpl, "apiKeySources", "PATH");
+    apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter("apiKeyPath", "testKeyPath");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
-    String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
 
     assertEquals("testKeyPath", apiKey);
 
@@ -54,13 +54,13 @@ class ApiKeyHelperTest {
   @Test
   void testParamOnly() {
     ReflectionTestUtils
-      .setField(apiKeyHelper, "apiKeySources", "PARAM");
-    apiKeyHelper.init();
+      .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
+    apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter("apikey", "testKeyParam");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
-    String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
 
     assertEquals("testKeyParam", apiKey);
 
@@ -69,12 +69,12 @@ class ApiKeyHelperTest {
   @Test
   void shouldReturnNull() {
     ReflectionTestUtils
-      .setField(apiKeyHelper, "apiKeySources", "PARAM");
-    apiKeyHelper.init();
+      .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
+    apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
-    String apiKey = apiKeyHelper.getEdgeApiKey(servletRequest);
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
 
     assertNull(apiKey);
   }

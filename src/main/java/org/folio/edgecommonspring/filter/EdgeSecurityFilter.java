@@ -10,11 +10,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.folio.edgecommonspring.domain.entity.RequestWithHeaders;
 import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.folio.edgecommonspring.security.SecurityManagerService;
-import org.folio.edgecommonspring.util.ApiKeyHelper;
+import org.folio.edgecommonspring.util.ApiKeyHelperImpl;
 import org.folio.spring.integration.XOkapiHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,15 +27,12 @@ import org.springframework.web.filter.GenericFilterBean;
 @ConditionalOnMissingBean(name = "edgeSecurityFilter")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "edge.security.filter", name = "enabled", matchIfMissing = true)
+@Log4j2
 public class EdgeSecurityFilter extends GenericFilterBean {
 
-  public static final String HEALTH_ENDPOINT = "/admin/health";
-  public static final String INFO_ENDPOINT = "/admin/info";
-  public static final String TENANT_ENDPOINTS = "/_/tenant";
-  public static final String PROXY_ENDPOINTS = "/_/proxy";
   private final SecurityManagerService securityManagerService;
-  private final ApiKeyHelper apiKeyHelper;
-  @Value("${header.edge.validation.exclude:/admin/health,/admin/info,/_/tenant,/_/proxy}")
+  private final ApiKeyHelperImpl apiKeyHelperImpl;
+  @Value("${header.edge.validation.exclude:/admin/health,/admin/info,/_/tenant}")
   private String[] excludeBasePaths;
 
   @Override
@@ -45,10 +43,12 @@ public class EdgeSecurityFilter extends GenericFilterBean {
     RequestWithHeaders wrapper = new RequestWithHeaders(httpRequest);
 
     if (isAuthorizationNeeded(wrapper)) {
-      var edgeApiKey = apiKeyHelper.getEdgeApiKey(request);
+      log.debug("Trying to get token while query: {}", ((HttpServletRequest) request).getRequestURI());
+      var edgeApiKey = apiKeyHelperImpl.getEdgeApiKey(request, apiKeyHelperImpl.getSources());
 
       if (StringUtils.isEmpty(edgeApiKey)) {
-        throw new AuthorizationException("Edge API key not found in the request");
+        throw new AuthorizationException(
+          "Edge API key not found in the request, while query " + ((HttpServletRequest) request).getRequestURI());
       }
 
       var requiredOkapiHeaders = securityManagerService.getParamsWithToken(edgeApiKey);
