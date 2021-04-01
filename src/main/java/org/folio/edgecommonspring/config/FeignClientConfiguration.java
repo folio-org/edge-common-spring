@@ -2,7 +2,6 @@ package org.folio.edgecommonspring.config;
 
 import feign.Client;
 import org.folio.edgecommonspring.client.EnrichUrlClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.clientconfig.OkHttpFeignConfiguration;
@@ -20,7 +19,7 @@ import org.springframework.context.annotation.Import;
 public class FeignClientConfiguration {
 
   @Bean
-  public Client enrichHeadersClient(@Autowired okhttp3.OkHttpClient okHttpClient) {
-    return new EnrichUrlClient(okHttpClient);
+  public Client enrichHeadersClient() {
+    return new EnrichUrlClient();
   }
 }

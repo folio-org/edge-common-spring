@@ -67,11 +67,25 @@ class ApiKeyHelperImplTest {
   }
 
   @Test
-  void shouldReturnNull() {
+  void shouldReturnNull_whenApiKeyNotPresent() {
     ReflectionTestUtils
       .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
     apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
+    ServletRequest servletRequest = new HttpServletRequestWrapper(request);
+
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
+
+    assertNull(apiKey);
+  }
+
+  @Test
+  void shouldReturnNull_whenHeaderApiKeyEmpty() {
+    ReflectionTestUtils
+      .setField(apiKeyHelperImpl, "apiKeySources", "HEADER");
+    apiKeyHelperImpl.init();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("Authorization", "");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
     String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
