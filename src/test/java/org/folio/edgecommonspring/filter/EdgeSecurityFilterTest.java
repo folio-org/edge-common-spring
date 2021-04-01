@@ -99,7 +99,7 @@ class EdgeSecurityFilterTest {
     // when & then
     AuthorizationException exception = Assertions.assertThrows(AuthorizationException.class,
       () -> edgeSecurityFilter.doFilter(request, response, filterChain));
-    Assertions.assertEquals("Edge API key not found in the request", exception.getMessage());
+    Assertions.assertEquals("Edge API key not found in the request, while query /tests", exception.getMessage());
   }
 
   @ParameterizedTest
