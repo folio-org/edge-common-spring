@@ -46,6 +46,9 @@ class EdgeSecurityFilterTest {
   private static final String HEALTH_ENDPOINT = "/admin/health";
   private static final String INFO_ENDPOINT = "/admin/info";
   private static final String TENANT_ENDPOINTS = "/_/tenant";
+  private static final String SWAGGER_RESOURCES_ENDPOINT = "/swagger-resources";
+  private static final String SWAGGER_DOCS_ENDPOINT = "/v2/api-docs";
+  private static final String SWAGGER_UI_ENDPOINT = "/swagger-ui";
   private static RequestFacade request = Mockito.mock(RequestFacade.class);
   private static ServletResponse response = Mockito.mock(ServletResponse.class);
   private static FilterChain filterChain = Mockito.mock(FilterChain.class);
@@ -103,7 +106,7 @@ class EdgeSecurityFilterTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {HEALTH_ENDPOINT, TENANT_ENDPOINTS, INFO_ENDPOINT})
+  @ValueSource(strings = {HEALTH_ENDPOINT, TENANT_ENDPOINTS, INFO_ENDPOINT, SWAGGER_RESOURCES_ENDPOINT, SWAGGER_DOCS_ENDPOINT, SWAGGER_UI_ENDPOINT})
   void testDoFilter_shouldNotCreateParams_whenAuthorizationNotNeeded(String endpoint)
     throws IOException, ServletException {
     //given
