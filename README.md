@@ -16,7 +16,7 @@ The intent of edge-common-spring is to simplify the implementation of edge APIs 
 ### How to use this framework
 All spring way edge modules, that will use this library, should add it as a dependency. 
 After that, all requests that will call the edge module will go through the request filter from the library. 
-As a result, incoming request will contain ***x-okapi-token*** in the header, and the edge module will be able to invoke folio modules.
+As a result, outgoing request will contain ***x-okapi-token*** in the header, and the edge module will be able to invoke folio modules.
 
 By default, filter will make authorization and receive the ***x-okapi-token*** header only if the requested URL does not start with: /admin/health, admin/info, /swagger-resources, /v2/api-docs, /swagger-ui, /_/tenant.
 The array of endpoints that need to be excluded can be overriden, for example:
