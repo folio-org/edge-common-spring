@@ -40,7 +40,7 @@ public class EdgeSecurityFilter extends GenericFilterBean {
     throws IOException, ServletException {
 
     final HttpServletRequest httpRequest = (HttpServletRequest) request;
-    RequestWithHeaders wrapper = new RequestWithHeaders(httpRequest);
+    var wrapper = new RequestWithHeaders(httpRequest);
 
     if (isAuthorizationNeeded(wrapper)) {
       log.debug("Trying to get token while query: {}", ((HttpServletRequest) request).getRequestURI());
