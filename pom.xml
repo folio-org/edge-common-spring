@@ -25,7 +25,7 @@
   <properties>
     <java.version>11</java.version>
     <folio-spring-base-version>1.0.4</folio-spring-base-version>
-    <edge-api-utils-version>1.0.0</edge-api-utils-version>
+    <edge-api-utils-version>1.1.0-SNAPSHOT</edge-api-utils-version>
     <wiremock-version>2.27.2</wiremock-version>
     <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
     <sonar.exclusions>src/main/java/org/folio/edgecommonspring/domain/**,

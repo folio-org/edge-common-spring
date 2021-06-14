@@ -57,7 +57,7 @@ class ApiKeyHelperImplTest {
       .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
     apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setParameter("apikey", "testKeyParam");
+    request.setParameter("apiKey", "testKeyParam");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
     String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
