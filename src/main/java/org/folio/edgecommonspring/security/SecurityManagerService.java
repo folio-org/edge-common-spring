@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.folio.edge.api.utils.cache.TokenCache;
 import org.folio.edge.api.utils.cache.TokenCache.NotInitializedException;
+import org.folio.edge.api.utils.exception.AuthorizationException;
 import org.folio.edge.api.utils.model.ClientInfo;
 import org.folio.edge.api.utils.security.SecureStore;
 import org.folio.edge.api.utils.security.SecureStore.NotFoundException;
@@ -20,7 +21,6 @@ import org.folio.edge.api.utils.util.ApiKeyParser;
 import org.folio.edge.api.utils.util.PropertiesUtil;
 import org.folio.edgecommonspring.client.AuthnClient;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
-import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

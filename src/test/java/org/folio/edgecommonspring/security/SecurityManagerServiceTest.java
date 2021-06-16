@@ -7,9 +7,10 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
+
+import org.folio.edge.api.utils.exception.AuthorizationException;
 import org.folio.edgecommonspring.client.AuthnClient;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
-import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -7,18 +7,18 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Collections;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.commons.lang3.ArrayUtils;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.domain.entity.RequestWithHeaders;
-import org.folio.edgecommonspring.exception.AuthorizationException;
 import org.folio.edgecommonspring.security.SecurityManagerService;
 import org.folio.edgecommonspring.util.ApiKeyHelperImpl;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,7 +51,7 @@ class EdgeSecurityFilterTest {
   private static final String SWAGGER_DOCS_ENDPOINT = "/v2/api-docs";
   private static final String SWAGGER_UI_ENDPOINT = "/swagger-ui";
   private static RequestFacade request = Mockito.mock(RequestFacade.class);
-  private static ServletResponse response = Mockito.mock(ServletResponse.class);
+  private static HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static FilterChain filterChain = Mockito.mock(FilterChain.class);
   @InjectMocks
   private EdgeSecurityFilter edgeSecurityFilter;
@@ -62,7 +63,7 @@ class EdgeSecurityFilterTest {
   @BeforeAll
   static void beforeAll() {
     request = Mockito.mock(RequestFacade.class);
-    response = Mockito.mock(ServletResponse.class);
+    response = Mockito.mock(HttpServletResponse.class);
     filterChain = Mockito.mock(FilterChain.class);
   }
 
@@ -87,11 +88,11 @@ class EdgeSecurityFilterTest {
     // then
     Assertions.assertEquals(TENANT, requestCaptor.getValue().getHeader("x-okapi-tenant"));
     Assertions.assertEquals(MOCK_TOKEN, requestCaptor.getValue().getHeader("x-okapi-token"));
-    Mockito.verify(filterChain).doFilter(requestCaptor.getValue(), response);
+    verify(filterChain).doFilter(requestCaptor.getValue(), response);
   }
 
   @Test
-  void testDoFilter_shouldThrowAuthorizationException() throws IOException, ServletException {
+  void testDoFilter_shouldSetStatus401ToResponse_whenAuthorizationExceptionThrown() throws IOException, ServletException {
     //given
     ReflectionTestUtils
       .setField(edgeSecurityFilter, "excludeBasePaths", new String[]{"/admin"});
@@ -99,10 +100,11 @@ class EdgeSecurityFilterTest {
     when((request).getHeaderNames()).thenReturn(Collections.emptyEnumeration());
     when((request).getRequestURI()).thenReturn("/tests");
 
-    // when & then
-    AuthorizationException exception = Assertions.assertThrows(AuthorizationException.class,
-      () -> edgeSecurityFilter.doFilter(request, response, filterChain));
-    Assertions.assertEquals("Edge API key not found in the request, while query /tests", exception.getMessage());
+    // when
+    edgeSecurityFilter.doFilter(request, response, filterChain);
+
+    //then
+    verify(response).sendError(HttpStatus.UNAUTHORIZED.value(), "Edge API key not found in the request, while query /tests");
   }
 
   @ParameterizedTest
@@ -121,8 +123,8 @@ class EdgeSecurityFilterTest {
     edgeSecurityFilter.doFilter(request, response, filterChain);
 
     // then
-    Mockito.verify(apiKeyHelperImpl, never()).getEdgeApiKey(any(ServletRequest.class), anyList());
-    Mockito.verify(securityManagerService, never()).getParamsWithToken(anyString());
+    verify(apiKeyHelperImpl, never()).getEdgeApiKey(any(ServletRequest.class), anyList());
+    verify(securityManagerService, never()).getParamsWithToken(anyString());
   }
 
   private ArgumentCaptor<RequestWithHeaders> captureRequest() throws IOException, ServletException {

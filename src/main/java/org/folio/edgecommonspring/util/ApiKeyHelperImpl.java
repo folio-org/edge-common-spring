@@ -2,6 +2,7 @@ package org.folio.edgecommonspring.util;
 
 import static org.folio.edge.api.utils.Constants.HEADER_API_KEY;
 import static org.folio.edge.api.utils.Constants.PARAM_API_KEY;
+import static org.folio.edge.api.utils.Constants.LEGACY_PARAM_API_KEY;
 import static org.folio.edge.api.utils.Constants.PATH_API_KEY;
 
 import java.util.ArrayList;
@@ -32,8 +33,12 @@ public class ApiKeyHelperImpl implements ApiKeyHelper {
   }
 
   @Override
-  public String getFromParam(Object servletRequest) {
-    return ((ServletRequest) servletRequest).getParameter(PARAM_API_KEY);
+  public String getFromParam(Object request) {
+    ServletRequest servletRequest = (ServletRequest) request;
+    if(servletRequest.getParameterMap().containsKey(PARAM_API_KEY)) {
+      return servletRequest.getParameter(PARAM_API_KEY);
+    }
+    return servletRequest.getParameter(LEGACY_PARAM_API_KEY);
   }
 
   @Override
