@@ -52,12 +52,27 @@ class ApiKeyHelperImplTest {
   }
 
   @Test
-  void testParamOnly() {
+  void shouldReturnApiKey_byNewApiKeyParamName() {
     ReflectionTestUtils
       .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
     apiKeyHelperImpl.init();
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter("apiKey", "testKeyParam");
+    ServletRequest servletRequest = new HttpServletRequestWrapper(request);
+
+    String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
+
+    assertEquals("testKeyParam", apiKey);
+
+  }
+
+  @Test
+  void shouldReturnApiKey_byLegacyApiKeyParamName() {
+    ReflectionTestUtils
+      .setField(apiKeyHelperImpl, "apiKeySources", "PARAM");
+    apiKeyHelperImpl.init();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setParameter("apikey", "testKeyParam");
     ServletRequest servletRequest = new HttpServletRequestWrapper(request);
 
     String apiKey = apiKeyHelperImpl.getEdgeApiKey(servletRequest, apiKeyHelperImpl.getSources());
