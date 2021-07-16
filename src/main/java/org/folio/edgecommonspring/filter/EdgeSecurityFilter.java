@@ -58,6 +58,7 @@ public class EdgeSecurityFilter extends GenericFilterBean {
     } catch (AuthorizationException e) {
       HttpServletResponse httpServletResponse = (HttpServletResponse) response;
       handleAuthorizationException(httpServletResponse, e);
+      return;
     }
     filterChain.doFilter(wrapper, response);
   }
