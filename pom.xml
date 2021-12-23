@@ -24,11 +24,13 @@
 
   <properties>
     <java.version>11</java.version>
-    <folio-spring-base-version>1.0.4</folio-spring-base-version>
+    <log4j2.version>2.17.0</log4j2.version>
+    <folio-spring-base-version>1.0.5</folio-spring-base-version>
     <edge-api-utils-version>1.1.0</edge-api-utils-version>
     <wiremock-version>2.27.2</wiremock-version>
     <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
-    <sonar.exclusions>src/main/java/org/folio/edgecommonspring/domain/**,
+    <sonar.exclusions>
+      src/main/java/org/folio/edgecommonspring/domain/**,
       src/main/java/org/folio/edgecommonspring/client/AuthnClient.java
     </sonar.exclusions>
   </properties>
