@@ -3,3 +3,9 @@ feign:
     config:
       default:
         loggerLevel: full
+
+spring:
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
