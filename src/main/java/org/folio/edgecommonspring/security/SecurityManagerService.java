@@ -6,7 +6,7 @@ import static org.folio.edge.api.utils.Constants.PROP_SECURE_STORE_TYPE;
 import static org.folio.edge.api.utils.Constants.X_OKAPI_TOKEN;
 
 import java.util.Properties;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
