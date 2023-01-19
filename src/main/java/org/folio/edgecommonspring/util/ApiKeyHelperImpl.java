@@ -1,17 +1,17 @@
 package org.folio.edgecommonspring.util;
 
 import static org.folio.edge.api.utils.Constants.HEADER_API_KEY;
-import static org.folio.edge.api.utils.Constants.PARAM_API_KEY;
 import static org.folio.edge.api.utils.Constants.LEGACY_PARAM_API_KEY;
+import static org.folio.edge.api.utils.Constants.PARAM_API_KEY;
 import static org.folio.edge.api.utils.Constants.PATH_API_KEY;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
 import org.folio.edge.api.utils.util.ApiKeyHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
