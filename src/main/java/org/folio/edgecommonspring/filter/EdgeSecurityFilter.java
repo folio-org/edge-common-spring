@@ -55,7 +55,7 @@ public class EdgeSecurityFilter extends GenericFilterBean {
         wrapper.putHeader(XOkapiHeaders.TOKEN, requiredOkapiHeaders.getOkapiToken());
         wrapper.putHeader(TENANT, requiredOkapiHeaders.getTenantId());
       }
-      wrapper.putHeader("If-None-Match","");
+      wrapper.putHeader("If-None-Match", "");
     } catch (AuthorizationException e) {
       HttpServletResponse httpServletResponse = (HttpServletResponse) response;
       handleAuthorizationException(httpServletResponse, e);
