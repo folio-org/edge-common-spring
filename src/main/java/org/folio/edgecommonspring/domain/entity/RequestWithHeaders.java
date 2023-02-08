@@ -23,7 +23,8 @@ public final class RequestWithHeaders extends HttpServletRequestWrapper {
 
   @Override
   public Enumeration<String> getHeaders(String name) {
-    return Collections.enumeration(Collections.singletonList(headers.get(name)));
+    return headers.containsKey(name) ? Collections.enumeration(Collections.singletonList(headers.get(name)))
+      : Collections.emptyEnumeration();
   }
 
   @Override

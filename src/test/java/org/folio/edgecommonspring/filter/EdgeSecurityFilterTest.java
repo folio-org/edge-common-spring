@@ -86,7 +86,7 @@ class EdgeSecurityFilterTest {
     // then
     Assertions.assertEquals(TENANT, requestCaptor.getValue().getHeader("x-okapi-tenant"));
     Assertions.assertEquals(MOCK_TOKEN, requestCaptor.getValue().getHeader("x-okapi-token"));
-    Assertions.assertEquals(3, Collections.list(requestCaptor.getValue().getHeaderNames()).size());
+    Assertions.assertEquals(2, Collections.list(requestCaptor.getValue().getHeaderNames()).size());
     verify(filterChain).doFilter(requestCaptor.getValue(), response);
   }
 
