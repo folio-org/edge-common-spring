@@ -1,3 +1,11 @@
+## 22/02/2023 v2.2.0 - Released
+This release includes Spring boot upgrade and logging improvements configuration.
+
+### Tasks
+* [EDGCMNSPR-31](https://issues.folio.org/browse/EDGCMNSPR-31) - Update the module to Spring boot v3.0.0 and identify issues.
+* [EDGCMNSPR-30](https://issues.folio.org/browse/EDGCMNSPR-30) - Update to Java 17.
+* [EDGCMNSPR-28](https://issues.folio.org/browse/EDGCMNSPR-28) - Logging improvement - Configuration
+
 ## 17/10/2022 v2.1.0 - Released
 This release includes version upgrade of spring and folio-spring-base library.
 
