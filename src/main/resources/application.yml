@@ -9,3 +9,6 @@ spring:
     openfeign:
       okhttp:
         enabled: true
+
+folio:
+  okapi-url: ${okapi_url:http://okapi:9130}

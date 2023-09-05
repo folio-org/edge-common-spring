@@ -1,15 +1,13 @@
 package org.folio.edgecommonspring.security;
 
-import static java.util.Optional.ofNullable;
 import static org.folio.edge.api.utils.Constants.DEFAULT_SECURE_STORE_TYPE;
 import static org.folio.edge.api.utils.Constants.PROP_SECURE_STORE_TYPE;
-import static org.folio.edge.api.utils.Constants.X_OKAPI_TOKEN;
 
 import jakarta.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.Properties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.folio.edge.api.utils.cache.TokenCache;
 import org.folio.edge.api.utils.cache.TokenCache.NotInitializedException;
 import org.folio.edge.api.utils.exception.AuthorizationException;
@@ -19,17 +17,18 @@ import org.folio.edge.api.utils.security.SecureStore.NotFoundException;
 import org.folio.edge.api.utils.security.SecureStoreFactory;
 import org.folio.edge.api.utils.util.ApiKeyParser;
 import org.folio.edge.api.utils.util.PropertiesUtil;
-import org.folio.edgecommonspring.client.AuthnClient;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
+import org.folio.spring.model.UserToken;
+import org.folio.spring.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class SecurityManagerService {
 
-  private final AuthnClient authnClient;
+  private final SystemUserService systemUserService;
   private SecureStore secureStore;
   private TokenCache tokenCache;
   @Value("${secure_store:Ephemeral}")
@@ -76,36 +75,35 @@ public class SecurityManagerService {
     String username) {
     try {
       TokenCache cache = TokenCache.getInstance();
-      String token = cache.get(salt, tenantId, username);
-      if (StringUtils.isNotEmpty(token)) {
+      UserToken token = cache.get(salt, tenantId, username);
+      var now = Instant.now();
+      if (token.accessTokenExpiration().isAfter(now)) {
         log.info("Using cached token");
         return new ConnectionSystemParameters().withOkapiToken(token)
           .withTenantId(tenantId);
       }
+      log.debug("No token in cache, started process of fetching token");
+      cache.invalidate(salt, tenantId, username);
+      ConnectionSystemParameters connectionSystemParameters = buildRequiredOkapiHeadersWithToken(salt, tenantId, username);
+      return connectionSystemParameters;
     } catch (NotInitializedException e) {
       log.warn("Failed to access TokenCache", e);
     }
-    log.debug("No token in cache, started process of fetching token");
-    return buildRequiredOkapiHeadersWithToken(salt, tenantId, username);
+    return null;
   }
 
   private ConnectionSystemParameters buildRequiredOkapiHeadersWithToken(String salt, String tenantId,
     String username) {
     ConnectionSystemParameters connectionSystemParameters = buildLoginRequest(salt, tenantId, username);
-    String token = loginAndGetToken(connectionSystemParameters, tenantId);
+    UserToken token = loginAndGetToken(connectionSystemParameters, tenantId);
     connectionSystemParameters.setOkapiToken(token);
     tokenCache.put(salt, tenantId, username, token);
     log.debug("Successfully fetched token and put in cache");
     return connectionSystemParameters;
   }
 
-  private String loginAndGetToken(ConnectionSystemParameters connectionSystemParameters, String tenantId) {
-    return ofNullable(
-      authnClient.getApiKey(connectionSystemParameters, tenantId)
-        .getHeaders()
-        .get(X_OKAPI_TOKEN))
-      .orElseThrow(() -> new AuthorizationException("Cannot retrieve okapi token for tenant: " + tenantId))
-      .get(0);
+  UserToken loginAndGetToken(ConnectionSystemParameters connectionSystemParameters, String tenantId) {
+    return systemUserService.authSystemUser(tenantId, connectionSystemParameters.getUsername(), connectionSystemParameters.getPassword());
   }
 
   private ConnectionSystemParameters buildLoginRequest(String salt, String tenantId,
@@ -122,5 +120,4 @@ public class SecurityManagerService {
         .format("Cannot get system connection properties for user with name: %s, for tenant: %s", username, tenantId));
     }
   }
-
 }

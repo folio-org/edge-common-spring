@@ -47,11 +47,15 @@
       <artifactId>folio-spring-base</artifactId>
       <version>${folio-spring-base-version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.folio</groupId>
+      <artifactId>folio-spring-system-user</artifactId>
+      <version>7.2.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>edge-api-utils</artifactId>
-      <version>${edge-api-utils-version}</version>
+      <version>1.3.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
@@ -94,6 +98,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
     </dependency>
   </dependencies>
 

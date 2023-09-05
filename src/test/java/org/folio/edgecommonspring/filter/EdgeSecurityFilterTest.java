@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Set;
 import org.apache.catalina.connector.RequestFacade;
@@ -22,6 +23,7 @@ import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
 import org.folio.edgecommonspring.domain.entity.RequestWithHeaders;
 import org.folio.edgecommonspring.security.SecurityManagerService;
 import org.folio.edgecommonspring.util.ApiKeyHelperImpl;
+import org.folio.spring.model.UserToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -75,7 +77,7 @@ class EdgeSecurityFilterTest {
     when((request).getRequestURI()).thenReturn("/tests");
     ConnectionSystemParameters connectionSystemParameters = new ConnectionSystemParameters()
       .withTenantId(TENANT)
-      .withOkapiToken(MOCK_TOKEN);
+      .withOkapiToken(new UserToken(MOCK_TOKEN, Instant.MAX));
     when(apiKeyHelperImpl.getEdgeApiKey(request, apiKeyHelperImpl.getSources())).thenReturn(API_KEY);
     when(securityManagerService.getParamsWithToken(API_KEY)).thenReturn(connectionSystemParameters);
     ArgumentCaptor<RequestWithHeaders> requestCaptor = captureRequest();

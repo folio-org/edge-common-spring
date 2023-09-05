@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.folio.spring.model.UserToken;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class ConnectionSystemParameters {
   private String password;
 
   @JsonIgnore
-  private String okapiToken;
+  private UserToken okapiToken;
 
   @JsonIgnore
   private String tenantId;

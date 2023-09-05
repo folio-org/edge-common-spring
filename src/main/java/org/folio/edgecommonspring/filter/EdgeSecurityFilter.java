@@ -52,7 +52,7 @@ public class EdgeSecurityFilter extends GenericFilterBean {
           throw new AuthorizationException(errorMessage);
         }
         var requiredOkapiHeaders = securityManagerService.getParamsWithToken(edgeApiKey);
-        wrapper.putHeader(XOkapiHeaders.TOKEN, requiredOkapiHeaders.getOkapiToken());
+        wrapper.putHeader(XOkapiHeaders.TOKEN, requiredOkapiHeaders.getOkapiToken().accessToken());
         wrapper.putHeader(TENANT, requiredOkapiHeaders.getTenantId());
       }
     } catch (AuthorizationException e) {
