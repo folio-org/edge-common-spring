@@ -84,8 +84,7 @@ public class SecurityManagerService {
       }
       log.debug("No token in cache, started process of fetching token");
       cache.invalidate(salt, tenantId, username);
-      ConnectionSystemParameters connectionSystemParameters = buildRequiredOkapiHeadersWithToken(salt, tenantId, username);
-      return connectionSystemParameters;
+      return buildRequiredOkapiHeadersWithToken(salt, tenantId, username);
     } catch (NotInitializedException e) {
       log.warn("Failed to access TokenCache", e);
     }
