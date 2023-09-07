@@ -83,6 +83,65 @@ class SecurityManagerServiceTest {
   }
 
   @Test
+  void getConnectionParams_success_withExpiredCachedTokenWithNullExpirationValue() {
+    securityManagerService.init();
+    TokenCache tokenCache = TokenCache.getInstance();
+    tokenCache.put("test_admin", "test", "test", new UserToken(MOCK_TOKEN,
+        null));
+    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
+        .tenantId("test")
+        .username("test")
+        .password("test")
+        .build();
+    when(systemUserService.authSystemUser(any(), any(), any()))
+        .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
+    ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
+
+    Assertions.assertNotNull(connectionSystemParameters);
+    Assertions.assertEquals("test", connectionSystemParameters.getTenantId());
+    Assertions.assertEquals(MOCK_TOKEN, connectionSystemParameters.getOkapiToken().accessToken());
+  }
+
+  @Test
+  void getConnectionParams_success_withExpiredCachedTokenWithNullAccessTokenValue() {
+    securityManagerService.init();
+    TokenCache tokenCache = TokenCache.getInstance();
+    tokenCache.put("test_admin", "test", "test", new UserToken(null,
+        Instant.now().minus(1, ChronoUnit.DAYS)));
+    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
+        .tenantId("test")
+        .username("test")
+        .password("test")
+        .build();
+    when(systemUserService.authSystemUser(any(), any(), any()))
+        .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
+    ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
+
+    Assertions.assertNotNull(connectionSystemParameters);
+    Assertions.assertEquals("test", connectionSystemParameters.getTenantId());
+    Assertions.assertEquals(MOCK_TOKEN, connectionSystemParameters.getOkapiToken().accessToken());
+  }
+
+  @Test
+  void getConnectionParams_success_withExpiredCachedTokenWithNullToken() {
+    securityManagerService.init();
+    TokenCache tokenCache = TokenCache.getInstance();
+    tokenCache.put("test_admin", "test", "test", null);
+    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
+        .tenantId("test")
+        .username("test")
+        .password("test")
+        .build();
+    when(systemUserService.authSystemUser(any(), any(), any()))
+        .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
+    ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
+
+    Assertions.assertNotNull(connectionSystemParameters);
+    Assertions.assertEquals("test", connectionSystemParameters.getTenantId());
+    Assertions.assertEquals(MOCK_TOKEN, connectionSystemParameters.getOkapiToken().accessToken());
+  }
+
+  @Test
   void getConnectionParams_passNotFound() {
     securityManagerService.init();
     TokenCache tokenCache = TokenCache.getInstance();
