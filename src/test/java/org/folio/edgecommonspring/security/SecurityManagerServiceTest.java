@@ -50,19 +50,6 @@ class SecurityManagerServiceTest {
         .setField(securityManagerService, "cacheCapacity", 100);
   }
 
-  /*@Test
-  void getConnectionParams_success() {
-    securityManagerService.init();
-//    when(authnClient.getApiKey(any(ConnectionSystemParameters.class), anyString())).thenReturn(getLoginResponse());
-    ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
-
-    Assertions.assertNotNull(connectionSystemParameters);
-    Assertions.assertEquals("test_admin", connectionSystemParameters.getUsername());
-    Assertions.assertEquals("test", connectionSystemParameters.getPassword());
-    Assertions.assertEquals("test", connectionSystemParameters.getTenantId());
-    Assertions.assertEquals(MOCK_TOKEN, connectionSystemParameters.getOkapiToken());
-  }*/
-
   @Test
   void getConnectionParams_success() {
     securityManagerService.init();
@@ -107,17 +94,16 @@ class SecurityManagerServiceTest {
       exception.getMessage());
   }
 
-  private ResponseEntity<String> getLoginResponse() {
-    URI uri = null;
-    try {
-      uri = new URI("http://localhost:9130/login");
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.created(Objects.requireNonNull(uri))
-      .header("x-okapi-token", MOCK_TOKEN)
-      .body(LOGIN_RESPONSE_BODY);
+  @Test
+  void getConnectionParams_withTemperedEdgeApiKey() {
+    securityManagerService.init();
+    TokenCache tokenCache = TokenCache.getInstance();
+    tokenCache.put("BPaofNFncK6477DubxDh", "test", "wrong_user", new UserToken(MOCK_TOKEN,
+        Instant.now().minus(1, ChronoUnit.DAYS)));
+    var temperedEdgeApiKey = API_KEY + "tempered";
+    AuthorizationException exception = Assertions.assertThrows(AuthorizationException.class, () ->
+        securityManagerService.getParamsWithToken(temperedEdgeApiKey));
+    Assertions.assertEquals("Malformed edge api key: " + temperedEdgeApiKey,
+        exception.getMessage());
   }
-
-
 }

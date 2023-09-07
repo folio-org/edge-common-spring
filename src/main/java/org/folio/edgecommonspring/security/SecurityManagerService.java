@@ -77,7 +77,7 @@ public class SecurityManagerService {
       TokenCache cache = TokenCache.getInstance();
       UserToken token = cache.get(salt, tenantId, username);
       var now = Instant.now();
-      if (token.accessTokenExpiration().isAfter(now)) {
+      if (isValidUserToken(token) && token.accessTokenExpiration().isAfter(now)) {
         log.info("Using cached token");
         return new ConnectionSystemParameters().withOkapiToken(token)
           .withTenantId(tenantId);
@@ -89,6 +89,10 @@ public class SecurityManagerService {
       log.warn("Failed to access TokenCache", e);
     }
     return null;
+  }
+
+  private boolean isValidUserToken(UserToken token) {
+    return token != null && token.accessToken() != null && token.accessTokenExpiration() != null;
   }
 
   private ConnectionSystemParameters buildRequiredOkapiHeadersWithToken(String salt, String tenantId,
