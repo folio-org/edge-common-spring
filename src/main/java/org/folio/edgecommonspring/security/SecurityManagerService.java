@@ -71,7 +71,7 @@ public class SecurityManagerService {
     return getParamsDependingOnCachePresent(salt, tenantId, username);
   }
 
-  private ConnectionSystemParameters getParamsDependingOnCachePresent(String salt, String tenantId,
+  public ConnectionSystemParameters getParamsDependingOnCachePresent(String salt, String tenantId,
     String username) {
     try {
       TokenCache cache = TokenCache.getInstance();
