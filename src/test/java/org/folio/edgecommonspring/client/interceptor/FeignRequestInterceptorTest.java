@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FeignRequestInterceptorTest {
+class FeignRequestInterceptorTest {
 
   private final String TEST_TENANT = "test_tenant";
   @InjectMocks
@@ -28,7 +28,7 @@ public class FeignRequestInterceptorTest {
   private RequestTemplate requestTemplate;
 
   @Test
-  public void testFeignInterceptorWithValidInterceptorUrl1() {
+  void testFeignInterceptorWithValidInterceptorUrl1() {
     when(requestTemplate.path()).thenReturn("/login");
     when(executionContext.getTenantId()).thenReturn("test_tenant");
     feignRequestInterceptor.apply(requestTemplate);
@@ -36,7 +36,7 @@ public class FeignRequestInterceptorTest {
   }
 
   @Test
-  public void testFeignInterceptorWithValidInterceptorUrl2() {
+  void testFeignInterceptorWithValidInterceptorUrl2() {
     when(requestTemplate.path()).thenReturn("/login-with-expiry");
     when(executionContext.getTenantId()).thenReturn("test_tenant");
     feignRequestInterceptor.apply(requestTemplate);
@@ -44,7 +44,7 @@ public class FeignRequestInterceptorTest {
   }
 
   @Test
-  public void testFeignInterceptorWithInValidInterceptorUrl() {
+  void testFeignInterceptorWithInValidInterceptorUrl() {
     when(requestTemplate.path()).thenReturn("/login-with-Expiry");
     feignRequestInterceptor.apply(requestTemplate);
     verify(requestTemplate, never()).header(any(), any(Iterable.class));
