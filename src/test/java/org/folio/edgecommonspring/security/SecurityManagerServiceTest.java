@@ -1,15 +1,10 @@
 package org.folio.edgecommonspring.security;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-
 import org.folio.edge.api.utils.cache.TokenCache;
 import org.folio.edge.api.utils.exception.AuthorizationException;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
@@ -22,14 +17,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class SecurityManagerServiceTest {
 
-  private static final String MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9eyJzdWIiOiJ0ZXN0X2FkbWluIiwidXNlcl9pZCI6ImQyNjUwOGJlLTJmMGItNTUyMC1iZTNkLWQwYjRkOWNkNmY2ZSIsImlhdCI6MTYxNjQ4NDc5NCwidGVuYW50IjoidGVzdCJ9VRYeA0s1O14hAXoTG34EAl80";
-  private static final String LOGIN_RESPONSE_BODY = "{\r\n    \"username\": \"diku_admin\",\r\n    \"password\": \"admin\"\r\n}";
+  private static final String MOCK_TOKEN = "test-token";
   private static final String API_KEY = "eyJzIjoidGVzdF9hZG1pbiIsInQiOiJ0ZXN0IiwidSI6InRlc3QifQ==";
   private static final String WRONG_KEY = "eyJzIjoiQlBhb2ZORm5jSzY0NzdEdWJ4RGgiLCJ0IjoidGVzdCIsInUiOiJ3cm9uZ191c2VyIn0=";
   private static final Instant TOKEN_EXPIRATION = Instant.now().plus(1, ChronoUnit.DAYS);

@@ -76,8 +76,7 @@ public class SecurityManagerService {
     try {
       TokenCache cache = TokenCache.getInstance();
       UserToken token = cache.get(salt, tenantId, username);
-      var now = Instant.now();
-      if (isValidUserToken(token) && token.accessTokenExpiration().isAfter(now)) {
+      if (isValidUserToken(token) && token.accessTokenExpiration().isAfter(Instant.now().minusSeconds(30L))) {
         log.info("Using cached token");
         return new ConnectionSystemParameters().withOkapiToken(token)
           .withTenantId(tenantId);
