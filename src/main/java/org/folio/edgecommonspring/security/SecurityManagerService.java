@@ -18,6 +18,7 @@ import org.folio.edge.api.utils.security.SecureStoreFactory;
 import org.folio.edge.api.utils.util.ApiKeyParser;
 import org.folio.edge.api.utils.util.PropertiesUtil;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
+import org.folio.spring.model.SystemUser;
 import org.folio.spring.model.UserToken;
 import org.folio.spring.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,12 +72,21 @@ public class SecurityManagerService {
     return getParamsDependingOnCachePresent(salt, tenantId, username);
   }
 
+  /**
+   * <p>Get from cache if present and is valid (not expired) for at least 30 seconds from now.
+   * Otherwise, call login expiry endpoint to get a new system user token.
+   *
+   * @param salt The salt value
+   * @param tenantId The tenant name
+   * @param username The username
+   * @return {@link ConnectionSystemParameters} with token value
+   */
   public ConnectionSystemParameters getParamsDependingOnCachePresent(String salt, String tenantId,
     String username) {
     try {
       TokenCache cache = TokenCache.getInstance();
       UserToken token = cache.get(salt, tenantId, username);
-      if (isValidUserToken(token) && token.accessTokenExpiration().isAfter(Instant.now().minusSeconds(30L))) {
+      if (isValidUserToken(token) && token.accessTokenExpiration().isAfter(Instant.now().plusSeconds(30L))) {
         log.info("Using cached token");
         return new ConnectionSystemParameters().withOkapiToken(token)
           .withTenantId(tenantId);

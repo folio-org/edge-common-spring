@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,11 +45,13 @@ class SecurityManagerServiceTest {
         .setField(securityManagerService, "cacheCapacity", 100);
   }
 
-  @Test
-  void getConnectionParams_success() {
+  @ParameterizedTest
+  @ValueSource(ints = { 40, 24 * 60 * 60 })
+  void getConnectionParams_success(int plusSeconds) {
+    var expectedToken = new UserToken(MOCK_TOKEN, Instant.now().plusSeconds(plusSeconds));
     securityManagerService.init();
     TokenCache tokenCache = TokenCache.getInstance();
-    tokenCache.put("test_admin", "test", "test", new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
+    tokenCache.put("test_admin", "test", "test", expectedToken);
     ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
 
     Assertions.assertNotNull(connectionSystemParameters);
@@ -55,19 +59,16 @@ class SecurityManagerServiceTest {
     Assertions.assertEquals(MOCK_TOKEN, connectionSystemParameters.getOkapiToken().accessToken());
   }
 
-  @Test
-  void getConnectionParams_success_with_expired_cached_token() {
+  @ParameterizedTest
+  @ValueSource(ints = { -24 * 60 * 60, -1, 30 })  // expires within 30 seconds
+  void getConnectionParams_success_with_expired_cached_token(int plusSeconds) {
     securityManagerService.init();
+    var expectedToken = new UserToken(MOCK_TOKEN, Instant.now().plusSeconds(plusSeconds));
     TokenCache tokenCache = TokenCache.getInstance();
-    tokenCache.put("test_admin", "test", "test", new UserToken(MOCK_TOKEN,
-        Instant.now().minus(1, ChronoUnit.DAYS)));
-    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
-        .tenantId("test")
-        .username("test")
-        .password("test")
-        .build();
+    tokenCache.put("test_admin", "test", "test", expectedToken);
+    ConnectionSystemParameters csp = connectionSystemParameters("test", "test", "test");
     when(systemUserService.authSystemUser(any(), any(), any()))
-        .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
+        .thenReturn(expectedToken);
     ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
 
     Assertions.assertNotNull(connectionSystemParameters);
@@ -81,11 +82,7 @@ class SecurityManagerServiceTest {
     TokenCache tokenCache = TokenCache.getInstance();
     tokenCache.put("test_admin", "test", "test", new UserToken(MOCK_TOKEN,
         null));
-    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
-        .tenantId("test")
-        .username("test")
-        .password("test")
-        .build();
+    ConnectionSystemParameters csp = connectionSystemParameters("test", "test", "test");
     when(systemUserService.authSystemUser(any(), any(), any()))
         .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
     ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
@@ -101,11 +98,7 @@ class SecurityManagerServiceTest {
     TokenCache tokenCache = TokenCache.getInstance();
     tokenCache.put("test_admin", "test", "test", new UserToken(null,
         Instant.now().minus(1, ChronoUnit.DAYS)));
-    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
-        .tenantId("test")
-        .username("test")
-        .password("test")
-        .build();
+    ConnectionSystemParameters csp = connectionSystemParameters("test", "test", "test");
     when(systemUserService.authSystemUser(any(), any(), any()))
         .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
     ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
@@ -120,11 +113,7 @@ class SecurityManagerServiceTest {
     securityManagerService.init();
     TokenCache tokenCache = TokenCache.getInstance();
     tokenCache.put("test_admin", "test", "test", null);
-    ConnectionSystemParameters csp = ConnectionSystemParameters.builder()
-        .tenantId("test")
-        .username("test")
-        .password("test")
-        .build();
+    ConnectionSystemParameters csp = connectionSystemParameters("test", "test", "test");
     when(systemUserService.authSystemUser(any(), any(), any()))
         .thenReturn(new UserToken(MOCK_TOKEN, TOKEN_EXPIRATION));
     ConnectionSystemParameters connectionSystemParameters = securityManagerService.getParamsWithToken(API_KEY);
@@ -157,5 +146,13 @@ class SecurityManagerServiceTest {
         securityManagerService.getParamsWithToken(temperedEdgeApiKey));
     Assertions.assertEquals("Malformed edge api key: " + temperedEdgeApiKey,
         exception.getMessage());
+  }
+
+  private ConnectionSystemParameters connectionSystemParameters(String tenantId, String username, String password) {
+    return ConnectionSystemParameters.builder()
+        .tenantId(tenantId)
+        .username(username)
+        .password(password)
+        .build();
   }
 }
