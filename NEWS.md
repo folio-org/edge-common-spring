@@ -1,3 +1,10 @@
+## 23/03/2024 v2.3.3 - Released
+This released patches dependencies to fix security vulnerabilities.
+
+### Bug Fixes
+* [EDGCMNSPR-43](https://folio-org.atlassian.net/browse/EDGCMNSPR-43) - Spring Boot 3.1.6, folio-spring-\* 7.2.2
+* [EDGCMNSPR-46](https://folio-org.atlassian.net/browse/EDGCMNSPR-46) - edge-api-util 1.3.1 removing ion-java CVE-2024-21634
+
 ## 30/11/2023 v2.3.2 - Released
 This release includes upgrade of folio-spring-base dependency.
 
