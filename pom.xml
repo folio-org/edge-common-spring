@@ -10,7 +10,7 @@
 
   <groupId>org.folio</groupId>
   <artifactId>edge-common-spring</artifactId>
-  <version>2.4.0-SNAPSHOT</version>
+  <version>2.3.4-SNAPSHOT</version>
   <name>edge-common-spring</name>
   <description>A shared library/framework for edge APIs for spring way modules</description>
   <packaging>jar</packaging>
@@ -24,7 +24,7 @@
 
   <properties>
     <java.version>17</java.version>
-    <folio-spring-version>7.2.2</folio-spring-version>
+    <folio-spring-version>7.2.2</folio-spring-version>  <!-- also update spring-boot-starter-parent version above -->
     <versions-maven-plugin-version>2.16.0</versions-maven-plugin-version>
     <maven-enforcer-plugin-version>3.4.0</maven-enforcer-plugin-version>
     <build-helper-maven-plugin-version>3.4.0</build-helper-maven-plugin-version>
@@ -32,7 +32,7 @@
     <maven-source-plugin-version>3.3.0</maven-source-plugin-version>
     <maven-javadoc-plugin-version>3.5.0</maven-javadoc-plugin-version>
     <maven-deploy-plugin-version>3.1.1</maven-deploy-plugin-version>
-    <edge-api-utils-version>1.3.0</edge-api-utils-version>
+    <edge-api-utils-version>1.3.1</edge-api-utils-version>
     <mockito-version>5.2.0</mockito-version>
     <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
     <sonar.exclusions>
