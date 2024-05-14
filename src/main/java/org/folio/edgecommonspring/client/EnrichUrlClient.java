@@ -30,14 +30,19 @@ public class EnrichUrlClient extends Client.Default {
   @Override
   @SneakyThrows
   public Response execute(Request request, Options options) {
+    var okapiUrlToUse = getUrlToUse();
+    FieldUtils.writeDeclaredField(request, "url", request.url().replace("http://", okapiUrlToUse + "/"), true);
+
+    return super.execute(request, options);
+  }
+
+  private String getUrlToUse() {
     String okapiUrlToUse = properties.getOkapiUrl();
     if (isBlank(okapiUrlToUse)) {
       log.warn("deprecated property okapi_url is used. Please use folio.client.okapiUrl instead.");
       okapiUrlToUse = okapiUrl;
     }
-    FieldUtils.writeDeclaredField(request, "url", request.url().replace("http://", okapiUrlToUse + "/"), true);
-
-    return super.execute(request, options);
+    return okapiUrlToUse;
   }
 
 }
