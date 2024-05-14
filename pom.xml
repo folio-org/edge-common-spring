@@ -37,6 +37,7 @@
     <sonar.exclusions>
       src/main/java/org/folio/edgecommonspring/domain/**,
       src/main/java/org/folio/edgecommonspring/client/AuthnClient.java
+      src/main/java/org/folio/edgecommonspring/client/EdgeFeignClientProperties.java
     </sonar.exclusions>
     <folio-backend-common.version>1.4.1</folio-backend-common.version>
   </properties>
