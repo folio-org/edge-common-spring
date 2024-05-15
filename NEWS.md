@@ -1,3 +1,9 @@
+## 03/14/2024 v2.4.2 - Released
+This release contains TLS support.
+
+### Bug Fixes
+* [EDGCMNSPR-51](https://folio-org.atlassian.net/browse/EDGCMNSPR-51) - Update EnrichUrlClient to use new property and add TLS
+
 ## 03/14/2024 v2.4.1 - Released
 This release fixes a bug.
 
