@@ -10,5 +10,6 @@ spring:
       okhttp:
         enabled: true
 
+# Dokapi_url is deprecated. Please use folio.client.okapiUrl instead
 folio:
   okapi-url: ${okapi_url:http://okapi:9130}
