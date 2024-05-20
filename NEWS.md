@@ -1,3 +1,6 @@
+## 05/20/2024 v2.4.4 - Released
+This release contains adjustments for handling of the deprecated okapi_url in the EnrichUrlClient.
+
 ## 03/14/2024 v2.4.2 - Released
 This release contains TLS support.
 
