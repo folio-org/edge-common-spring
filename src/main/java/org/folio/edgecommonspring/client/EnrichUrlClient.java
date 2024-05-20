@@ -12,17 +12,17 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Log4j2
 public class EnrichUrlClient extends Client.Default {
   private final EdgeFeignClientProperties properties;
 
   @Deprecated
-  @Value("${okapi_url:NO_VALUE}")
+  @Value("${okapi_url:#{null}}")
   private String okapiUrl; // okapi_url is deprecated. Please use folio.client.okapiUrl instead
 
-  public EnrichUrlClient(EdgeFeignClientProperties properties,  SSLSocketFactory sslContextFactory, HostnameVerifier hostnameVerifier) {
+  public EnrichUrlClient(EdgeFeignClientProperties properties, SSLSocketFactory sslContextFactory, HostnameVerifier hostnameVerifier) {
     super(sslContextFactory, hostnameVerifier);
     this.properties = properties;
   }
@@ -37,10 +37,11 @@ public class EnrichUrlClient extends Client.Default {
   }
 
   private String getUrlToUse() {
-    String okapiUrlToUse = properties.getOkapiUrl();
-    if (isBlank(okapiUrlToUse)) {
+    String okapiUrlToUse = okapiUrl;
+    if (isNotBlank(okapiUrlToUse)) {
       log.warn("deprecated property okapi_url is used. Please use folio.client.okapiUrl instead.");
-      okapiUrlToUse = okapiUrl;
+    } else {
+      okapiUrlToUse = properties.getOkapiUrl();
     }
     return okapiUrlToUse;
   }
