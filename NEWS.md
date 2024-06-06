@@ -1,5 +1,10 @@
-## 05/20/2024 v2.4.4 - Released
-This release contains adjustments for handling of the deprecated okapi_url in the EnrichUrlClient.
+## 06/06/2024 v2.4.4 - Released
+This release contains security bug fixes.
+
+* [EDGCMNSPR-53](https://folio-org.atlassian.net/browse/EDGCMNSPR-53) Spring Boot 3.2.6, bcprov-jdk18on 1.78 fixing vulns
+
+## 05/20/2024 v2.4.3 - Released
+This release contains adjustments for handling of the deprecated okapi\_url in the EnrichUrlClient.
 
 ## 03/14/2024 v2.4.2 - Released
 This release contains TLS support.
