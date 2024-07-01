@@ -32,7 +32,7 @@
     <maven-source-plugin-version>3.3.0</maven-source-plugin-version>
     <maven-javadoc-plugin-version>3.6.3</maven-javadoc-plugin-version>
     <maven-deploy-plugin-version>3.1.1</maven-deploy-plugin-version>
-    <edge-api-utils-version>1.5.0-SNAPSHOT</edge-api-utils-version>
+    <edge-api-utils-version>1.4.2</edge-api-utils-version>
     <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
     <sonar.exclusions>
       src/main/java/org/folio/edgecommonspring/domain/**,
