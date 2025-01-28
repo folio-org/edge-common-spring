@@ -1,3 +1,8 @@
+## 27/01/2025 v2.5.0 - Released
+This release contains dependencies updating.
+
+* [EDGCMNSPR-57](https://folio-org.atlassian.net/browse/EDGCMNSPR-57) Upgrade dependencies for Ramsons fixing vulns
+
 ## 09/05/2024 v2.4.6 - Released
 This release contains dependencies updating.
 
