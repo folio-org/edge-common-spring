@@ -8,11 +8,9 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.folio.common.utils.exception.SslInitializationException;
 import org.folio.edgecommonspring.client.EdgeFeignClientProperties;
 import org.folio.edgecommonspring.client.EnrichUrlClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -22,12 +20,6 @@ import static org.folio.common.utils.tls.Utils.IS_HOSTNAME_VERIFICATION_DISABLED
 @Configuration
 @EnableFeignClients(basePackages = {"org.folio.edgecommonspring.client"})
 @EnableConfigurationProperties(EdgeFeignClientProperties.class)
-@ConditionalOnMissingBean(value = Client.class)
-@ComponentScan({"org.folio.edgecommonspring.client",
-  "org.folio.edgecommonspring.security",
-  "org.folio.edgecommonspring.domain.entity",
-  "org.folio.edgecommonspring.util",
-  "org.folio.edgecommonspring.filter"})
 @Log4j2
 @AllArgsConstructor
 public class FeignClientConfiguration {
