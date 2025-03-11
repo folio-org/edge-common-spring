@@ -1,3 +1,9 @@
+## 2026-03-11 v3.0.0 - Released
+This is the Sunflower release with updates of dependencies and Java.
+
+* [EDGCMNSPR-59](https://folio-org.atlassian.net/browse/EDGCMNSPR-59) Migrate to Java 21; Bump to Spring Boot 3.4.3
+* [#61](https://github.com/folio-org/edge-common-spring/pull/61) Bump up edge-api-utils to 1.6.0
+
 ## 27/01/2025 v2.5.0 - Released
 This release contains dependencies updating.
 
