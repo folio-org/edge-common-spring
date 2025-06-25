@@ -22,11 +22,10 @@ public class ApiKeyHelperImpl implements ApiKeyHelper {
   public static final Pattern AUTH_TYPE = Pattern.compile("(?i).*apikey (\\w*).*");
   @Value("${api_key_sources:PARAM,HEADER,PATH}")
   private String apiKeySources;
-  private List<ApiKeySource> sources;
+  private List<ApiKeySource> sources = new ArrayList<>();
 
   @PostConstruct
   public void init() {
-    sources = new ArrayList<>();
     for (String source : Pattern.compile(",").split(apiKeySources)) {
       sources.add(ApiKeySource.valueOf(source));
     }
