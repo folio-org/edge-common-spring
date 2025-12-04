@@ -21,6 +21,7 @@ import org.folio.spring.integration.XOkapiHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -54,6 +55,7 @@ public class EdgeSecurityFilter extends GenericFilterBean {
         var requiredOkapiHeaders = securityManagerService.getParamsWithToken(edgeApiKey);
         wrapper.putHeader(XOkapiHeaders.TOKEN, requiredOkapiHeaders.getOkapiToken().accessToken());
         wrapper.putHeader(TENANT, requiredOkapiHeaders.getTenantId());
+        wrapper.putHeader(HttpHeaders.ACCEPT, httpRequest.getHeader(HttpHeaders.ACCEPT));
       }
     } catch (AuthorizationException e) {
       HttpServletResponse httpServletResponse = (HttpServletResponse) response;
