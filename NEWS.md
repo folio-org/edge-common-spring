@@ -1,3 +1,8 @@
+## 10-12-2-25 v3.0.1 - Released
+
+This is CSP release with update of adding support of Accept header in EdgeSecuredFilter 
+* [EDGCMNSPR-61](https://folio-org.atlassian.net/browse/EDGCMNSPR-61) Add support for Accept header
+
 ## 2026-03-11 v3.0.0 - Released
 This is the Sunflower release with updates of dependencies and Java.
 
