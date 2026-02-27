@@ -38,13 +38,11 @@ class LoginRequestInterceptorTest {
     "http:///login",
     "/login",
     "/authn/login",
-    "login",
     "authn/login",
     "http:///login-with-expiry",
     "http:///authn/login-with-expiry",
     "/login-with-expiry",
     "/authn/login-with-expiry",
-    "login-with-expiry",
     "authn/login-with-expiry",
   })
   void testFeignInterceptorWithValidInterceptorUrl(String uri) throws IOException {
@@ -63,11 +61,13 @@ class LoginRequestInterceptorTest {
   @ValueSource(strings = {
     "http://test",
     "test",
+    "login",
     "/test",
     "http://login-with-Expiry",
     "/login-with-Expiry",
     "login-with-Expiry",
     "http://Login",
+    "login-with-expiry",
     "/Login",
     "Login/test/123",
     "http://unknown",

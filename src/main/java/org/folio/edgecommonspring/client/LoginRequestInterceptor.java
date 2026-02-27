@@ -25,8 +25,7 @@ public class LoginRequestInterceptor implements ClientHttpRequestInterceptor {
     @NonNull ClientHttpRequestExecution execution) throws IOException {
 
     var uriPath = request.getURI().getPath();
-    var path = uriPath.startsWith("/") ? uriPath : "/" + uriPath;
-    if (Strings.CS.endsWithAny(path, "/login", "/login-with-expiry")) {
+    if (Strings.CS.endsWithAny(uriPath, "/login", "/login-with-expiry")) {
       request.getHeaders().put(TENANT, Collections.singletonList(folioExecutionContext.getTenantId()));
     }
     return execution.execute(request, body);
