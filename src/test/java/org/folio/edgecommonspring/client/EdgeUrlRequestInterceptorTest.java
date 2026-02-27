@@ -40,6 +40,7 @@ class EdgeUrlRequestInterceptorTest {
     "entities, /entities",
     "http://test/entities/92393, /test/entities/92393",
     "https://test/entities/92393, /test/entities/92393",
+    "https://test.okapi.sample.org/test/entities/92393, /test/entities/92393",
     "/test/entities/92393, /test/entities/92393",
     "test/entities/92393, /test/entities/92393"
   })
@@ -66,8 +67,9 @@ class EdgeUrlRequestInterceptorTest {
     "entities, /entities",
     "http://test/entities/92393, /test/entities/92393",
     "https://test/entities/92393, /test/entities/92393",
+    "https://depreacated.okapi.sample.org/entities, /entities",
     "/test/entities/92393, /test/entities/92393",
-    "test/entities/92393, /test/entities/92393"
+    "test/entities/92393, /test/entities/92393",
   })
   void shouldInterceptWithValidDeprecatedUrlSetting(String uri, String expectedPath) throws Exception {
     var okapiUrl = "https://depreacated.okapi.sample.org";

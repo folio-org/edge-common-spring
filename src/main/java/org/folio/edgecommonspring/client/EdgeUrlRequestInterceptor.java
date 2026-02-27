@@ -35,9 +35,15 @@ public class EdgeUrlRequestInterceptor implements ClientHttpRequestInterceptor {
 
   @Override
   public @NonNull ClientHttpResponse intercept(HttpRequest request, byte @NonNull [] body,
-    ClientHttpRequestExecution execution) throws IOException {
+    @NonNull ClientHttpRequestExecution execution) throws IOException {
 
     var okapiUrlToUse = getUrlToUse();
+
+    // If the request already starts with the Okapi URL, modification can be skipped to invalid URIs.
+    if (Strings.CI.startsWith(request.getURI().toString(), okapiUrlToUse)) {
+      return execution.execute(request, body);
+    }
+
     var uri = prepareUrl(request.getURI().toString(), okapiUrlToUse);
     var modifiedRequest = new EdgeHttpRequestWrapper(request, URI.create(uri), request.getHeaders());
     return execution.execute(modifiedRequest, body);

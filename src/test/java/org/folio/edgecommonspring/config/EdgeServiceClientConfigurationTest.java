@@ -6,7 +6,7 @@ import org.folio.common.configuration.properties.TlsProperties;
 import org.folio.common.utils.exception.SslInitializationException;
 import org.folio.edgecommonspring.client.EdgeClientProperties;
 import org.folio.edgecommonspring.client.EdgeUrlRequestInterceptor;
-import org.folio.edgecommonspring.client.LoginRequestInterceptor;
+import org.folio.spring.client.EnrichUrlAndHeadersInterceptor;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,22 +23,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith({ SpringExtension.class, MockitoExtension.class })
 class EdgeServiceClientConfigurationTest {
 
   @InjectMocks private EdgeServiceClientConfiguration configuration;
   @Mock private EdgeClientProperties properties;
   @Mock private TlsProperties tlsProperties;
   @Mock private JsonMapper jsonMapper;
-  @Mock private LoginRequestInterceptor loginRequestInterceptor;
   @Mock private EdgeUrlRequestInterceptor edgeUrlRequestInterceptor;
+  @Mock private EnrichUrlAndHeadersInterceptor enrichUrlAndHeadersInterceptor;
 
   @Test
   void edgeExchangeRestClientBuilder_noTls() {
     when(properties.getTls()).thenReturn(null);
 
-    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(
-      jsonMapper, properties, null, loginRequestInterceptor, edgeUrlRequestInterceptor);
+    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor);
 
     var client = restClientBuilder.build();
 
@@ -53,8 +53,8 @@ class EdgeServiceClientConfigurationTest {
     when(tlsProperties.isEnabled()).thenReturn(true);
     when(tlsProperties.getTrustStorePath()).thenReturn(null);
 
-    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(
-      jsonMapper, properties, null, loginRequestInterceptor, edgeUrlRequestInterceptor);
+    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor);
 
     var client = restClientBuilder.build();
 
@@ -68,8 +68,8 @@ class EdgeServiceClientConfigurationTest {
     when(properties.getTls()).thenReturn(tlsProperties);
     when(tlsProperties.isEnabled()).thenReturn(true);
     when(tlsProperties.getTrustStorePath()).thenReturn("classpath:test.truststore1.jks");
-    assertThatThrownBy(() -> configuration.edgeExchangeRestClientBuilder(
-      jsonMapper, properties, null, loginRequestInterceptor, edgeUrlRequestInterceptor))
+    assertThatThrownBy(() -> configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor))
       .isInstanceOf(SslInitializationException.class)
       .hasMessageContaining("Error creating RestClient with SSL context");
   }
@@ -81,8 +81,8 @@ class EdgeServiceClientConfigurationTest {
     when(tlsProperties.getTrustStorePath()).thenReturn("classpath:test.truststore.jks");
     when(tlsProperties.getTrustStorePassword()).thenReturn("SecretPassword");
 
-    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(
-      jsonMapper, properties, null, loginRequestInterceptor, edgeUrlRequestInterceptor);
+    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor);
     var client = restClientBuilder.build();
 
     assertThat(client).isInstanceOf(RestClient.class);

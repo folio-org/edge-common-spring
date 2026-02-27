@@ -12,11 +12,12 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.folio.common.utils.exception.SslInitializationException;
 import org.folio.edgecommonspring.client.EdgeClientProperties;
 import org.folio.edgecommonspring.client.EdgeUrlRequestInterceptor;
-import org.folio.edgecommonspring.client.LoginRequestInterceptor;
 import org.folio.spring.FolioExecutionContext;
+import org.folio.spring.client.EnrichUrlAndHeadersInterceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,28 +40,44 @@ public class EdgeServiceClientConfiguration {
 
   private static final DefaultHostnameVerifier DEFAULT_HOSTNAME_VERIFIER = new DefaultHostnameVerifier();
 
+  /**
+   * Provides interceptor to enrich outgoing requests with edge service URL from configuration properties.
+   *
+   * @param properties - edge client properties to get edge service URL from
+   * @return {@link EdgeUrlRequestInterceptor} instance
+   */
   @Bean
   public EdgeUrlRequestInterceptor edgeUrlRequestInterceptor(EdgeClientProperties properties) {
     return new EdgeUrlRequestInterceptor(properties);
   }
 
+  /**
+   * This bean is required to enrich outgoing requests with okapi headers.
+   * It's conditional to avoid conflict if {@code folio.exchange.enabled} is set to {@code true}.
+   *
+   * @param context - folio execution context to get okapi headers values from
+   * @return {@link EnrichUrlAndHeadersInterceptor} instance
+   */
   @Bean
-  public LoginRequestInterceptor loginRequestInterceptor(FolioExecutionContext folioExecutionContext) {
-    return new LoginRequestInterceptor(folioExecutionContext);
+  @ConditionalOnMissingBean(EnrichUrlAndHeadersInterceptor.class)
+  public EnrichUrlAndHeadersInterceptor enrichUrlAndHeadersInterceptor(FolioExecutionContext context) {
+    return new EnrichUrlAndHeadersInterceptor(context);
   }
 
   @Bean
   public RestClient.Builder edgeExchangeRestClientBuilder(JsonMapper jsonMapper,
     EdgeClientProperties edgeClientProperties,
     @Qualifier("exchangeJsonMapper") @Autowired(required = false) JsonMapper exchangeJsonMapper,
-    @Qualifier("loginRequestInterceptor") LoginRequestInterceptor loginRequestInterceptor,
-    @Qualifier("edgeUrlRequestInterceptor") EdgeUrlRequestInterceptor edgeUrlRequestInterceptor) {
+    @Qualifier("edgeUrlRequestInterceptor") EdgeUrlRequestInterceptor edgeUrlRequestInterceptor,
+    @Qualifier("enrichUrlAndHeadersInterceptor") EnrichUrlAndHeadersInterceptor enrichUrlAndHeadersInterceptor) {
+
+    var mapper = getIfNull(exchangeJsonMapper, jsonMapper);
     return RestClient.builder()
       .requestFactory(buildRequestFactory(edgeClientProperties))
-      .requestInterceptor(loginRequestInterceptor)
+      .requestInterceptor(enrichUrlAndHeadersInterceptor)
       .requestInterceptor(edgeUrlRequestInterceptor)
       .configureMessageConverters(configurer ->
-        configurer.addCustomConverter(new JacksonJsonHttpMessageConverter(getIfNull(exchangeJsonMapper, jsonMapper))));
+        configurer.addCustomConverter(new JacksonJsonHttpMessageConverter(mapper)));
   }
 
   @Bean

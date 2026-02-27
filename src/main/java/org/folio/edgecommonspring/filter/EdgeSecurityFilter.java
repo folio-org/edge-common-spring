@@ -21,17 +21,18 @@ import org.folio.spring.integration.XOkapiHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.servlet.filter.OrderedFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+@Log4j2
+@RequiredArgsConstructor
 @Component("defaultEdgeSecurityFilter")
 @ConditionalOnMissingBean(name = "edgeSecurityFilter")
-@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "edge.security.filter", name = "enabled", matchIfMissing = true)
-@Log4j2
-public class EdgeSecurityFilter extends GenericFilterBean {
+public class EdgeSecurityFilter extends GenericFilterBean implements OrderedFilter {
 
   private final SecurityManagerService securityManagerService;
   private final ApiKeyHelperImpl apiKeyHelperImpl;
@@ -49,7 +50,8 @@ public class EdgeSecurityFilter extends GenericFilterBean {
         log.debug("Trying to get token while query: {}", ((HttpServletRequest) request).getRequestURI());
         var edgeApiKey = apiKeyHelperImpl.getEdgeApiKey(request, apiKeyHelperImpl.getSources());
         if (StringUtils.isEmpty(edgeApiKey)) {
-          String errorMessage = String.format("Edge API key not found in the request, while query %s", ((HttpServletRequest) request).getRequestURI());
+          String errorMessage = String.format("Edge API key not found in the request, while query %s",
+            ((HttpServletRequest) request).getRequestURI());
           throw new AuthorizationException(errorMessage);
         }
         var requiredOkapiHeaders = securityManagerService.getParamsWithToken(edgeApiKey);
@@ -63,6 +65,17 @@ public class EdgeSecurityFilter extends GenericFilterBean {
       return;
     }
     filterChain.doFilter(wrapper, response);
+  }
+
+  /**
+   * Min value is used to make sure that this filter will be the first in the chain, so all other filters will have
+   * access to the headers added by this filter.
+   *
+   * @return int value of the order of this filter in the chain.
+   */
+  @Override
+  public int getOrder() {
+    return Integer.MIN_VALUE;
   }
 
   private void handleAuthorizationException(HttpServletResponse response, AuthorizationException e) throws IOException {
