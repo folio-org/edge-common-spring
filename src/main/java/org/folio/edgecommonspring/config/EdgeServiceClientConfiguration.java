@@ -88,7 +88,7 @@ public class EdgeServiceClientConfiguration {
       .build();
   }
 
-  private ClientHttpRequestFactory buildRequestFactory(EdgeClientProperties edgeClientProperties) {
+  private static ClientHttpRequestFactory buildRequestFactory(EdgeClientProperties edgeClientProperties) {
     var tls = edgeClientProperties.getTls();
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
       log.info("RestClient without TLS will be created. TLS config: {}", tls);
