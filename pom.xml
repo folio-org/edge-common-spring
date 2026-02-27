@@ -49,24 +49,12 @@
       <groupId>org.folio</groupId>
       <artifactId>folio-spring-system-user</artifactId>
       <version>${folio-spring-version}</version>
-      <exclusions>
-        <exclusion>
-          <!-- circular dependency: https://folio-org.atlassian.net/browse/FOLSPRINGS-146 -->
-          <groupId>org.folio</groupId>
-          <artifactId>edge-api-utils</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>edge-api-utils</artifactId>
       <version>${edge-api-utils-version}</version>
       <exclusions>
-        <exclusion>
-          <!-- circular dependency: https://folio-org.atlassian.net/browse/FOLSPRINGS-146 -->
-          <groupId>org.folio</groupId>
-          <artifactId>folio-spring-system-user</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-to-slf4j</artifactId>
