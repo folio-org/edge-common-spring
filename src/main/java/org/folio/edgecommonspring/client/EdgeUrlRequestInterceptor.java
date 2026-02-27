@@ -21,6 +21,8 @@ import org.springframework.http.client.support.HttpRequestWrapper;
 @RequiredArgsConstructor
 public class EdgeUrlRequestInterceptor implements ClientHttpRequestInterceptor {
 
+  private static final String HTTP_PROTOCOL_PREFIX = "http://";
+  private static final String HTTPS_PROTOCOL_PREFIX = "https://";
   private final EdgeClientProperties properties;
 
   /**
@@ -62,12 +64,12 @@ public class EdgeUrlRequestInterceptor implements ClientHttpRequestInterceptor {
   static String prepareUrl(String requestUrl, String okapiUrl) {
     var modifiedOkapiUrl = Strings.CS.appendIfMissing(okapiUrl, "/");
 
-    if (requestUrl.startsWith("http://")) {
-      return requestUrl.replaceFirst("http://", modifiedOkapiUrl);
+    if (requestUrl.startsWith(HTTP_PROTOCOL_PREFIX)) {
+      return Strings.CS.replace(requestUrl, HTTP_PROTOCOL_PREFIX, modifiedOkapiUrl);
     }
 
-    if (requestUrl.startsWith("https://")) {
-      return requestUrl.replaceFirst("https://", modifiedOkapiUrl);
+    if (requestUrl.startsWith(HTTPS_PROTOCOL_PREFIX)) {
+      return Strings.CS.replace(requestUrl, HTTPS_PROTOCOL_PREFIX, modifiedOkapiUrl);
     }
 
     return modifiedOkapiUrl + Strings.CI.removeStart(requestUrl, "/");

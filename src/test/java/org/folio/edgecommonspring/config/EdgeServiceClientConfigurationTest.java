@@ -48,6 +48,37 @@ class EdgeServiceClientConfigurationTest {
   }
 
   @Test
+  void edgeExchangeRestClientBuilder_tlsIsDisabled() {
+    when(tlsProperties.isEnabled()).thenReturn(false);
+    when(properties.getTls()).thenReturn(tlsProperties);
+
+    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor);
+
+    var client = restClientBuilder.build();
+
+    assertThat(client).isInstanceOf(RestClient.class);
+    verify(properties, atLeastOnce()).getTls();
+    verifyNoMoreInteractions(properties);
+  }
+
+  @Test
+  void edgeExchangeRestClientBuilder_trustStorePathIsEmpty() {
+    when(tlsProperties.isEnabled()).thenReturn(true);
+    when(tlsProperties.getTrustStorePath()).thenReturn("");
+    when(properties.getTls()).thenReturn(tlsProperties);
+
+    var restClientBuilder = configuration.edgeExchangeRestClientBuilder(jsonMapper, properties,
+      null, edgeUrlRequestInterceptor, enrichUrlAndHeadersInterceptor);
+
+    var client = restClientBuilder.build();
+
+    assertThat(client).isInstanceOf(RestClient.class);
+    verify(properties, atLeastOnce()).getTls();
+    verifyNoMoreInteractions(properties);
+  }
+
+  @Test
   void enrichHeadersClient_withTlsNoTrustStorePath() {
     when(properties.getTls()).thenReturn(tlsProperties);
     when(tlsProperties.isEnabled()).thenReturn(true);
@@ -89,5 +120,13 @@ class EdgeServiceClientConfigurationTest {
     verify(properties, atLeastOnce()).getTls();
     verify(tlsProperties, atLeastOnce()).getTrustStorePath();
     verify(tlsProperties, atLeastOnce()).getTrustStorePassword();
+  }
+
+  @Test
+  void shouldCreateEdgeHttpServiceProxyFactory() {
+    var restClientBuilder = RestClient.builder();
+    var factory = configuration.edgeHttpServiceProxyFactory(restClientBuilder);
+
+    assertThat(factory).isNotNull();
   }
 }
