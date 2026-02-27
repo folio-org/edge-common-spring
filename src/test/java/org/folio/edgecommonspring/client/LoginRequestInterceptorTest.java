@@ -37,10 +37,15 @@ class LoginRequestInterceptorTest {
   @ValueSource(strings = {
     "http:///login",
     "/login",
+    "/authn/login",
     "login",
+    "authn/login",
     "http:///login-with-expiry",
+    "http:///authn/login-with-expiry",
     "/login-with-expiry",
-    "login-with-expiry"
+    "/authn/login-with-expiry",
+    "login-with-expiry",
+    "authn/login-with-expiry",
   })
   void testFeignInterceptorWithValidInterceptorUrl(String uri) throws IOException {
     var headers = new HttpHeaders();

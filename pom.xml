@@ -26,30 +26,13 @@
     <java.version>21</java.version>
     <folio-spring-version>10.0.0-RC1</folio-spring-version>
     <folio-backend-common.version>4.0.0-SNAPSHOT</folio-backend-common.version>
-    <commons-lang3.version>3.20.0</commons-lang3.version>
-
     <edge-api-utils-version>1.7.0-SNAPSHOT</edge-api-utils-version>
-    <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
-    <sonar.exclusions>
-      src/main/java/org/folio/edgecommonspring/domain/**,
-      src/main/java/org/folio/edgecommonspring/client/EdgeClientProperties.java
-    </sonar.exclusions>
-
-    <!-- Plugin Versions -->
-    <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
-    <maven-source-plugin-version>3.3.0</maven-source-plugin-version>
-    <maven-javadoc-plugin-version>3.6.3</maven-javadoc-plugin-version>
-    <maven-deploy-plugin-version>3.1.1</maven-deploy-plugin-version>
-    <maven-enforcer-plugin-version>3.4.1</maven-enforcer-plugin-version>
-    <versions-maven-plugin-version>2.16.2</versions-maven-plugin-version>
-    <build-helper-maven-plugin-version>3.5.0</build-helper-maven-plugin-version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
@@ -160,7 +143,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>${versions-maven-plugin-version}</version>
         <configuration>
           <generateBackupPoms>false</generateBackupPoms>
         </configuration>
@@ -169,7 +151,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven-enforcer-plugin-version}</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -190,7 +171,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${build-helper-maven-plugin-version}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -209,7 +189,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>${maven-release-plugin-version}</version>
         <configuration>
           <preparationGoals>clean verify</preparationGoals>
           <tagNameFormat>v@{project.version}</tagNameFormat>
@@ -221,7 +200,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>${maven-source-plugin-version}</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -236,7 +214,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven-javadoc-plugin-version}</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -251,7 +228,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven-deploy-plugin-version}</version>
         <executions>
           <execution>
             <id>deploy</id>
