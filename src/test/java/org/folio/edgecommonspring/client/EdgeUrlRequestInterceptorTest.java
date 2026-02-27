@@ -18,6 +18,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
@@ -48,10 +49,12 @@ class EdgeUrlRequestInterceptorTest {
     var okapiUrl = "https://test.okapi.sample.org";
     when(httpRequest.getURI()).thenReturn(URI.create(uri));
     when(properties.getOkapiUrl()).thenReturn(okapiUrl);
+    when(httpRequest.getHeaders()).thenReturn(new HttpHeaders());
     when(nextExecution.execute(requestCaptor.capture(), any())).thenReturn(clientHttpResponse);
     try (var response = edgeUrlRequestInterceptor.intercept(httpRequest, new byte[0], nextExecution)) {
       assertThat(response).isNotNull();
       var capturedRequest = requestCaptor.getValue();
+      assertThat(capturedRequest.getHeaders()).isNotNull();
       assertThat(capturedRequest.getURI().toURL())
         .hasProtocol("https")
         .hasHost("test.okapi.sample.org")
@@ -76,10 +79,12 @@ class EdgeUrlRequestInterceptorTest {
     FieldUtils.writeDeclaredField(edgeUrlRequestInterceptor, "okapiUrl", okapiUrl, true);
 
     when(httpRequest.getURI()).thenReturn(URI.create(uri));
+    when(httpRequest.getHeaders()).thenReturn(new HttpHeaders());
     when(nextExecution.execute(requestCaptor.capture(), any())).thenReturn(clientHttpResponse);
     try (var response = edgeUrlRequestInterceptor.intercept(httpRequest, new byte[0], nextExecution)) {
       assertThat(response).isNotNull();
       var capturedRequest = requestCaptor.getValue();
+      assertThat(capturedRequest.getHeaders()).isNotNull();
       assertThat(capturedRequest.getURI().toURL())
         .hasProtocol("https")
         .hasHost("depreacated.okapi.sample.org")

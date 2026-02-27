@@ -6,6 +6,7 @@ import org.folio.common.configuration.properties.TlsProperties;
 import org.folio.common.utils.exception.SslInitializationException;
 import org.folio.edgecommonspring.client.EdgeClientProperties;
 import org.folio.edgecommonspring.client.EdgeUrlRequestInterceptor;
+import org.folio.spring.FolioExecutionContext;
 import org.folio.spring.client.EnrichUrlAndHeadersInterceptor;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestClient;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -128,5 +130,18 @@ class EdgeServiceClientConfigurationTest {
     var factory = configuration.edgeHttpServiceProxyFactory(restClientBuilder);
 
     assertThat(factory).isNotNull();
+  }
+
+  @Test
+  void shouldCreateEnrichUrlAndHeadersInterceptor() {
+    var context = mock(FolioExecutionContext.class);
+    var result = configuration.enrichUrlAndHeadersInterceptor(context);
+    assertThat(result).isNotNull();
+  }
+
+  @Test
+  void shouldCreateEdgeUrlRequestInterceptor() {
+    var result = configuration.edgeUrlRequestInterceptor(properties);
+    assertThat(result).isNotNull();
   }
 }
