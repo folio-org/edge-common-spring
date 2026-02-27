@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @ConfigurationProperties(prefix = "folio.client")
-public class EdgeFeignClientProperties {
+public class EdgeClientProperties {
   private String okapiUrl;
 
   @NestedConfigurationProperty

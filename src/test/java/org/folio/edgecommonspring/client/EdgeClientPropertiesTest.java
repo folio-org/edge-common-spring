@@ -9,20 +9,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class EdgeFeignClientPropertiesTest {
+class EdgeClientPropertiesTest {
 
-  private EdgeFeignClientProperties edgeFeignClientProperties;
+  private EdgeClientProperties edgeClientProperties;
 
   @BeforeEach
   void setUp() {
-    edgeFeignClientProperties = new EdgeFeignClientProperties();
+    edgeClientProperties = new EdgeClientProperties();
   }
 
   @Test
   void testGetAndSetOkapiUrl() {
     String okapiUrl = "https://okapi-url";
-    edgeFeignClientProperties.setOkapiUrl(okapiUrl);
-    assertEquals(okapiUrl, edgeFeignClientProperties.getOkapiUrl());
+    edgeClientProperties.setOkapiUrl(okapiUrl);
+    assertEquals(okapiUrl, edgeClientProperties.getOkapiUrl());
   }
 
   @Test
@@ -32,20 +32,20 @@ class EdgeFeignClientPropertiesTest {
     tlsProperties.setTrustStorePath("TrustStorePath");
     tlsProperties.setTrustStoreType("TrustStoreType");
 
-    edgeFeignClientProperties.setTls(tlsProperties);
-    assertEquals(tlsProperties, edgeFeignClientProperties.getTls());
+    edgeClientProperties.setTls(tlsProperties);
+    assertEquals(tlsProperties, edgeClientProperties.getTls());
   }
 
   @Test
   void testDefaultConstructor() {
-    assertNotNull(edgeFeignClientProperties);
-    assertNull(edgeFeignClientProperties.getOkapiUrl());
-    assertNull(edgeFeignClientProperties.getTls());
+    assertNotNull(edgeClientProperties);
+    assertNull(edgeClientProperties.getOkapiUrl());
+    assertNull(edgeClientProperties.getTls());
   }
 
   @Test
   void testConfigurationPropertiesAnnotation() {
-    ConfigurationProperties configurationProperties = EdgeFeignClientProperties.class.getAnnotation(ConfigurationProperties.class);
+    ConfigurationProperties configurationProperties = EdgeClientProperties.class.getAnnotation(ConfigurationProperties.class);
     assertNotNull(configurationProperties);
     assertEquals("folio.client", configurationProperties.prefix());
   }

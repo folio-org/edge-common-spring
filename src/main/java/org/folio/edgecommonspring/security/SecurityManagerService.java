@@ -18,7 +18,6 @@ import org.folio.edge.api.utils.security.SecureStoreFactory;
 import org.folio.edge.api.utils.util.ApiKeyParser;
 import org.folio.edge.api.utils.util.PropertiesUtil;
 import org.folio.edgecommonspring.domain.entity.ConnectionSystemParameters;
-import org.folio.spring.model.SystemUser;
 import org.folio.spring.model.UserToken;
 import org.folio.spring.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Value;
