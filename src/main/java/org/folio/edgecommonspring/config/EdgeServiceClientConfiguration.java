@@ -91,7 +91,7 @@ public class EdgeServiceClientConfiguration {
   private static ClientHttpRequestFactory buildRequestFactory(EdgeClientProperties edgeClientProperties) {
     var tls = edgeClientProperties.getTls();
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
-      log.info("RestClient without TLS will be created. TLS config: {}", tls);
+      log.info("RestClient with default TLS will be created. TLS config: {}", tls);
       return new HttpComponentsClientHttpRequestFactory();
     }
 
@@ -111,7 +111,7 @@ public class EdgeServiceClientConfiguration {
           .build())
         .build();
 
-      log.info("RestClient with TLS will be created. TLS config: {}", tls);
+      log.info("RestClient with custom TLS will be created. TLS config: {}", tls);
       return new HttpComponentsClientHttpRequestFactory(httpClient);
 
     } catch (Exception e) {
