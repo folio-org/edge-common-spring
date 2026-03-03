@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.3</version>
+    <version>4.0.3</version>
     <relativePath />
   </parent>
 
   <groupId>org.folio</groupId>
   <artifactId>edge-common-spring</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <name>edge-common-spring</name>
   <description>A shared library/framework for edge APIs for spring way modules</description>
   <packaging>jar</packaging>
@@ -24,63 +24,27 @@
 
   <properties>
     <java.version>21</java.version>
-    <folio-spring-version>9.0.0</folio-spring-version>  <!-- also update spring-boot-starter-parent version above -->
-    <versions-maven-plugin-version>2.16.2</versions-maven-plugin-version>
-    <maven-enforcer-plugin-version>3.4.1</maven-enforcer-plugin-version>
-    <build-helper-maven-plugin-version>3.5.0</build-helper-maven-plugin-version>
-    <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
-    <maven-source-plugin-version>3.3.0</maven-source-plugin-version>
-    <maven-javadoc-plugin-version>3.6.3</maven-javadoc-plugin-version>
-    <maven-deploy-plugin-version>3.1.1</maven-deploy-plugin-version>
-    <edge-api-utils-version>1.6.0</edge-api-utils-version>
-    <!--Exclude this packages from sonar, as it contains only interfaces and entities-->
-    <sonar.exclusions>
-      src/main/java/org/folio/edgecommonspring/domain/**,
-      src/main/java/org/folio/edgecommonspring/client/EdgeFeignClientProperties.java
-    </sonar.exclusions>
-    <folio-backend-common.version>2.0.0</folio-backend-common.version>
-    <commons-lang3.version>3.17.0</commons-lang3.version>
+    <folio-spring-version>10.0.0-RC1</folio-spring-version>
+    <folio-backend-common.version>4.0.0-SNAPSHOT</folio-backend-common.version>
+    <edge-api-utils-version>1.7.0-SNAPSHOT</edge-api-utils-version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons-lang3.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.folio</groupId>
       <artifactId>folio-spring-base</artifactId>
       <version>${folio-spring-version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>folio-spring-system-user</artifactId>
       <version>${folio-spring-version}</version>
-      <exclusions>
-        <exclusion>
-          <!-- circular dependency: https://folio-org.atlassian.net/browse/FOLSPRINGS-146 -->
-          <groupId>org.folio</groupId>
-          <artifactId>edge-api-utils</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>edge-api-utils</artifactId>
       <version>${edge-api-utils-version}</version>
       <exclusions>
-        <exclusion>
-          <!-- circular dependency: https://folio-org.atlassian.net/browse/FOLSPRINGS-146 -->
-          <groupId>org.folio</groupId>
-          <artifactId>folio-spring-system-user</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-to-slf4j</artifactId>
@@ -121,6 +85,21 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-to-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
     </dependency>
 
     <dependency>
@@ -142,7 +121,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>${versions-maven-plugin-version}</version>
         <configuration>
           <generateBackupPoms>false</generateBackupPoms>
         </configuration>
@@ -151,7 +129,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven-enforcer-plugin-version}</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -172,7 +149,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${build-helper-maven-plugin-version}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -191,7 +167,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>${maven-release-plugin-version}</version>
         <configuration>
           <preparationGoals>clean verify</preparationGoals>
           <tagNameFormat>v@{project.version}</tagNameFormat>
@@ -203,7 +178,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>${maven-source-plugin-version}</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -218,7 +192,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven-javadoc-plugin-version}</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -233,7 +206,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven-deploy-plugin-version}</version>
         <executions>
           <execution>
             <id>deploy</id>
@@ -276,7 +248,7 @@
     <url>https://github.com/folio-org/${project.artifactId}</url>
     <connection>scm:git:git://github.com/folio-org/${project.artifactId}.git</connection>
     <developerConnection>scm:git:git@github.com:folio-org/${project.artifactId}.git</developerConnection>
-    <tag>v2.4.5</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>

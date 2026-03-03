@@ -1,5 +1,6 @@
 package org.folio.edgecommonspring.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -126,6 +127,12 @@ class EdgeSecurityFilterTest {
     // then
     verify(apiKeyHelperImpl, never()).getEdgeApiKey(any(ServletRequest.class), anyList());
     verify(securityManagerService, never()).getParamsWithToken(anyString());
+  }
+
+  @Test
+  void getOrder() {
+    var result = edgeSecurityFilter.getOrder();
+    assertThat(result).isEqualTo(Integer.MIN_VALUE);
   }
 
   private ArgumentCaptor<RequestWithHeaders> captureRequest() throws IOException, ServletException {
