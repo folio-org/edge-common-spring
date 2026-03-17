@@ -17,6 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestClient;
 
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.atLeastOnce;
@@ -127,7 +130,21 @@ class EdgeServiceClientConfigurationTest {
   @Test
   void shouldCreateEdgeHttpServiceProxyFactory() {
     var restClientBuilder = RestClient.builder();
-    var factory = configuration.edgeHttpServiceProxyFactory(restClientBuilder);
+    var factory = configuration.edgeHttpServiceProxyFactory(restClientBuilder, Optional.empty());
+
+    assertThat(factory).isNotNull();
+  }
+
+  @Test
+  void shouldCreateEdgeHttpServiceProxyFactoryWithCustomizer() {
+    var restClientBuilder = RestClient.builder();
+    UnaryOperator<RestClient.Builder> customizer = builder ->
+      builder.baseUrl("http://custom-url");
+
+    var factory = configuration.edgeHttpServiceProxyFactory(
+      restClientBuilder,
+      Optional.of(customizer)
+    );
 
     assertThat(factory).isNotNull();
   }
