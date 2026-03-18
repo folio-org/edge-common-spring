@@ -29,6 +29,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.folio.common.utils.tls.FeignClientTlsUtils.buildSslContext;
 import static org.folio.common.utils.tls.Utils.IS_HOSTNAME_VERIFICATION_DISABLED;
@@ -82,9 +85,14 @@ public class EdgeServiceClientConfiguration {
 
   @Bean
   public HttpServiceProxyFactory edgeHttpServiceProxyFactory(
-    @Qualifier("edgeExchangeRestClientBuilder") RestClient.Builder exchangeRestClient) {
+    @Qualifier("edgeExchangeRestClientBuilder") RestClient.Builder exchangeRestClient,
+    @Qualifier("edgeRestClientCustomizer") Optional<UnaryOperator<RestClient.Builder>> restClientCustomizer) {
+    var restClient = restClientCustomizer
+      .map(customizer -> customizer.apply(exchangeRestClient).build())
+      .orElseGet(exchangeRestClient::build);
+
     return HttpServiceProxyFactory
-      .builderFor(RestClientAdapter.create(exchangeRestClient.build()))
+      .builderFor(RestClientAdapter.create(restClient))
       .build();
   }
 
