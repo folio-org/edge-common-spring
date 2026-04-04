@@ -35,7 +35,7 @@ public class SecurityManagerService {
   private String secureStoreType;
   @Value("${secure_store_props:src/main/resources/ephemeral.properties}")
   private String secureStorePropsFile;
-  @Value("${token_cache_ttl_ms:3636000}")
+  @Value("${token_cache_ttl_ms:3600000}")
   private long cacheTtlMs;
   @Value("${null_token_cache_ttl_ms:30000}")
   private long failureCacheTtlMs;
