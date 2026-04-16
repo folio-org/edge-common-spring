@@ -1,3 +1,22 @@
+## 2026-04-16 v4.0.0 - Released
+This is the Trillium release with upgrade to Spring Boot 4.x, migration from Feign to RestClient, and other improvements.
+
+### Features
+* [EDGCMNSPR-61](https://folio-org.atlassian.net/browse/EDGCMNSPR-61) Add support for propagating `Accept` header in EdgeSecurityFilter
+* [EDGCMNSPR-65](https://folio-org.atlassian.net/browse/EDGCMNSPR-65) Add optional RestClient customizer for edge module
+
+### Bug Fixes
+* [EDGCMNSPR-64](https://folio-org.atlassian.net/browse/EDGCMNSPR-64) Wrong log entry: "RestClient without TLS will be created."
+* [#71](https://github.com/folio-org/edge-common-spring/pull/71) Fix typo in default for token_cache_ttl_ms
+
+### Tasks
+* [EDGCMNSPR-63](https://folio-org.atlassian.net/browse/EDGCMNSPR-63) Upgrade to Spring Boot v4.x.x and update dependencies for Trillium release
+* [EDGCMNSPR-66](https://folio-org.atlassian.net/browse/EDGCMNSPR-66) Remove deprecated folio.okapiUrl property from application.yml
+* [#72](https://github.com/folio-org/edge-common-spring/pull/72) Bump the prod-deps group across 1 directory with 3 updates
+* Fix false positive sonar issue in ApiKeyHelperImpl.java
+
+---
+
 ## 2026-03-11 v3.0.0 - Released
 This is the Sunflower release with updates of dependencies and Java.
 

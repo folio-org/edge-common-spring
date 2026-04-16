@@ -10,7 +10,7 @@
 
   <groupId>org.folio</groupId>
   <artifactId>edge-common-spring</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.1.0-SNAPSHOT</version>
   <name>edge-common-spring</name>
   <description>A shared library/framework for edge APIs for spring way modules</description>
   <packaging>jar</packaging>
@@ -25,8 +25,8 @@
   <properties>
     <java.version>21</java.version>
     <folio-spring-version>10.0.0</folio-spring-version>
-    <folio-backend-common.version>4.0.0-SNAPSHOT</folio-backend-common.version>
-    <edge-api-utils-version>1.7.0-SNAPSHOT</edge-api-utils-version>
+    <folio-backend-common.version>4.0.0</folio-backend-common.version>
+    <edge-api-utils-version>1.7.0</edge-api-utils-version>
   </properties>
 
   <dependencies>
