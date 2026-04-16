@@ -33,8 +33,8 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
-import static org.folio.common.utils.tls.FeignClientTlsUtils.buildSslContext;
 import static org.folio.common.utils.tls.Utils.IS_HOSTNAME_VERIFICATION_DISABLED;
+import static org.folio.common.utils.tls.Utils.buildSslContext;
 
 @Log4j2
 @Configuration
