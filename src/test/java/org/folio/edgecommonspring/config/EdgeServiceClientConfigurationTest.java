@@ -1,14 +1,15 @@
 package org.folio.edgecommonspring.config;
 
 import tools.jackson.databind.json.JsonMapper;
-
 import com.sun.net.httpserver.HttpServer;
+
 import org.folio.common.configuration.properties.TlsProperties;
 import org.folio.common.utils.exception.SslInitializationException;
 import org.folio.edgecommonspring.client.EdgeClientProperties;
 import org.folio.edgecommonspring.client.EdgeUrlRequestInterceptor;
 import org.folio.spring.FolioExecutionContext;
 import org.folio.spring.client.EnrichUrlAndHeadersInterceptor;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
