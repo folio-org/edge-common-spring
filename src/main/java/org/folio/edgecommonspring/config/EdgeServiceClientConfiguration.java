@@ -1,6 +1,7 @@
 package org.folio.edgecommonspring.config;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -84,6 +85,7 @@ public class EdgeServiceClientConfiguration {
   }
 
   @Bean
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   public HttpServiceProxyFactory edgeHttpServiceProxyFactory(
     @Qualifier("edgeExchangeRestClientBuilder") RestClient.Builder exchangeRestClient,
     @Qualifier("edgeRestClientCustomizer") Optional<UnaryOperator<RestClient.Builder>> restClientCustomizer) {
@@ -100,7 +102,16 @@ public class EdgeServiceClientConfiguration {
     var tls = edgeClientProperties.getTls();
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
       log.info("RestClient with default TLS will be created. TLS config: {}", tls);
-      return new HttpComponentsClientHttpRequestFactory();
+      // Cookie management must be disabled: this HttpClient is a singleton shared by all
+      // concurrent requests/tenants/users. Okapi auth is done exclusively via the
+      // X-Okapi-Token header; leaving cookie management on lets a Set-Cookie response
+      // (e.g. from system-user login-with-expiry) leak into unrelated concurrent
+      // requests' Cookie header, causing Okapi to reject them with
+      // "X-Okapi-Token conflicts with Cookie".
+      var httpClient = HttpClients.custom()
+        .disableCookieManagement()
+        .build();
+      return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
 
     try {
@@ -117,6 +128,7 @@ public class EdgeServiceClientConfiguration {
         .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
           .setTlsSocketStrategy(tlsSocketStrategy)
           .build())
+        .disableCookieManagement()
         .build();
 
       log.info("RestClient with custom TLS will be created. TLS config: {}", tls);
