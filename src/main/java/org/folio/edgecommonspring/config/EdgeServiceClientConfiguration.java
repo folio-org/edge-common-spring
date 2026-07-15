@@ -101,12 +101,6 @@ public class EdgeServiceClientConfiguration {
     var tls = edgeClientProperties.getTls();
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
       log.info("RestClient with default TLS will be created. TLS config: {}", tls);
-      // Cookie management must be disabled: this HttpClient is a singleton shared by all
-      // concurrent requests/tenants/users. Okapi auth is done exclusively via the
-      // X-Okapi-Token header; leaving cookie management on lets a Set-Cookie response
-      // (e.g. from system-user login-with-expiry) leak into unrelated concurrent
-      // requests' Cookie header, causing Okapi to reject them with
-      // "X-Okapi-Token conflicts with Cookie".
       var httpClient = HttpClients.custom()
         .disableCookieManagement()
         .build();
