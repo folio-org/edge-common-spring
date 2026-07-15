@@ -1,7 +1,6 @@
 package org.folio.edgecommonspring.config;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.apache.hc.client5.http.impl.classic.HttpClients;
