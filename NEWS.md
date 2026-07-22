@@ -1,3 +1,10 @@
+## 2026-07-22 v4.0.1 - Release
+
+### Bug Fixes
+* [EDGCMNSPR-69](https://folio-org.atlassian.net/browse/EDGCMNSPR-69) Disable cookie management for httpRequestFactory
+
+---
+
 ## 2026-04-16 v4.0.0 - Released
 This is the Trillium release with upgrade to Spring Boot 4.x, migration from Feign to RestClient, and other improvements.
 
