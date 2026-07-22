@@ -84,6 +84,7 @@ public class EdgeServiceClientConfiguration {
   }
 
   @Bean
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   public HttpServiceProxyFactory edgeHttpServiceProxyFactory(
     @Qualifier("edgeExchangeRestClientBuilder") RestClient.Builder exchangeRestClient,
     @Qualifier("edgeRestClientCustomizer") Optional<UnaryOperator<RestClient.Builder>> restClientCustomizer) {
@@ -100,7 +101,10 @@ public class EdgeServiceClientConfiguration {
     var tls = edgeClientProperties.getTls();
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
       log.info("RestClient with default TLS will be created. TLS config: {}", tls);
-      return new HttpComponentsClientHttpRequestFactory();
+      var httpClient = HttpClients.custom()
+        .disableCookieManagement()
+        .build();
+      return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
 
     try {
@@ -117,6 +121,7 @@ public class EdgeServiceClientConfiguration {
         .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
           .setTlsSocketStrategy(tlsSocketStrategy)
           .build())
+        .disableCookieManagement()
         .build();
 
       log.info("RestClient with custom TLS will be created. TLS config: {}", tls);
