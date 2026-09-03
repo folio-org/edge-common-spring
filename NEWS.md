@@ -1,3 +1,10 @@
+## 2026-09-03 v4.0.2 - Release
+
+### Bug Fixes
+* [EDGCMNSPR-68](https://folio-org.atlassian.net/browse/EDGCMNSPR-68) Upgrade edge-api-utils to 1.7.1
+
+---
+
 ## 2026-07-22 v4.0.1 - Release
 
 ### Bug Fixes
