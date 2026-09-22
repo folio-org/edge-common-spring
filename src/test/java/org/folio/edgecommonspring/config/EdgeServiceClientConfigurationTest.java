@@ -58,6 +58,8 @@ class EdgeServiceClientConfigurationTest {
 
     assertThat(client).isInstanceOf(RestClient.class);
     verify(properties, atLeastOnce()).getTls();
+    verify(properties, atLeastOnce()).getMaxConnections();
+    verify(properties, atLeastOnce()).getMaxPerRoute();
     verifyNoMoreInteractions(properties);
   }
 
@@ -73,6 +75,8 @@ class EdgeServiceClientConfigurationTest {
 
     assertThat(client).isInstanceOf(RestClient.class);
     verify(properties, atLeastOnce()).getTls();
+    verify(properties, atLeastOnce()).getMaxConnections();
+    verify(properties, atLeastOnce()).getMaxPerRoute();
     verifyNoMoreInteractions(properties);
   }
 
@@ -89,6 +93,8 @@ class EdgeServiceClientConfigurationTest {
 
     assertThat(client).isInstanceOf(RestClient.class);
     verify(properties, atLeastOnce()).getTls();
+    verify(properties, atLeastOnce()).getMaxConnections();
+    verify(properties, atLeastOnce()).getMaxPerRoute();
     verifyNoMoreInteractions(properties);
   }
 

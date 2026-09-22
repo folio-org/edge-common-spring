@@ -37,10 +37,21 @@ class EdgeClientPropertiesTest {
   }
 
   @Test
+  void testGetAndSetConnectionPoolProperties() {
+    edgeClientProperties.setMaxConnections(500);
+    edgeClientProperties.setMaxPerRoute(100);
+
+    assertEquals(500, edgeClientProperties.getMaxConnections());
+    assertEquals(100, edgeClientProperties.getMaxPerRoute());
+  }
+
+  @Test
   void testDefaultConstructor() {
     assertNotNull(edgeClientProperties);
     assertNull(edgeClientProperties.getOkapiUrl());
     assertNull(edgeClientProperties.getTls());
+    assertEquals(200, edgeClientProperties.getMaxConnections());
+    assertEquals(50, edgeClientProperties.getMaxPerRoute());
   }
 
   @Test
