@@ -5,7 +5,9 @@ import tools.jackson.databind.json.JsonMapper;
 
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 
@@ -102,6 +104,7 @@ public class EdgeServiceClientConfiguration {
     if (tls == null || !tls.isEnabled() || !StringUtils.hasText(tls.getTrustStorePath())) {
       log.info("RestClient with default TLS will be created. TLS config: {}", tls);
       var httpClient = HttpClients.custom()
+        .setConnectionManager(buildConnectionManager(edgeClientProperties, null))
         .disableCookieManagement()
         .build();
       return new HttpComponentsClientHttpRequestFactory(httpClient);
@@ -118,9 +121,7 @@ public class EdgeServiceClientConfiguration {
         .buildClassic();
 
       var httpClient = HttpClients.custom()
-        .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
-          .setTlsSocketStrategy(tlsSocketStrategy)
-          .build())
+        .setConnectionManager(buildConnectionManager(edgeClientProperties, tlsSocketStrategy))
         .disableCookieManagement()
         .build();
 
@@ -130,5 +131,19 @@ public class EdgeServiceClientConfiguration {
     } catch (Exception e) {
       throw new SslInitializationException("Error creating RestClient with SSL context", e);
     }
+  }
+
+  private static HttpClientConnectionManager buildConnectionManager(EdgeClientProperties edgeClientProperties,
+    TlsSocketStrategy tlsSocketStrategy) {
+
+    var maxConnections = edgeClientProperties.getMaxConnections();
+    var maxPerRoute = edgeClientProperties.getMaxPerRoute();
+    log.info("Edge client connection pool: maxConnections={}, maxPerRoute={}", maxConnections, maxPerRoute);
+
+    return PoolingHttpClientConnectionManagerBuilder.create()
+      .setTlsSocketStrategy(tlsSocketStrategy)
+      .setMaxConnTotal(maxConnections)
+      .setMaxConnPerRoute(maxPerRoute)
+      .build();
   }
 }
