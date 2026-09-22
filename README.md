@@ -22,6 +22,17 @@ By default, filter will make authorization and receive the ***x-okapi-token*** h
 The array of endpoints that need to be excluded can be overriden, for example:
  -D***header.edge.validation.exclude***="/firstRequiredEndpointToExclude, /secondRequiredEndpointToExclude".
 
+### Edge client connection pool
+The HTTP connection pool used by the edge client to call FOLIO modules is configurable:
+
+| Property                       | Environment variable           | Default |
+|--------------------------------|--------------------------------|---------|
+| `folio.client.max-connections` | `FOLIO_CLIENT_MAX_CONNECTIONS` | 200     |
+| `folio.client.max-per-route`   | `FOLIO_CLIENT_MAX_PER_ROUTE`   | 50      |
+
+`max-connections` limits the total number of connections in the pool, `max-per-route` limits the number of
+connections per target host.
+
 ### Issue tracker
 
 See project [EDGCMNSPR](https://issues.folio.org/browse/EDGCMNSPR)
