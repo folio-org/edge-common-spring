@@ -1,3 +1,10 @@
+## 2026-09-24 v4.0.3 - Release
+
+### Features
+* [EDGCMNSPR-71](https://folio-org.atlassian.net/browse/EDGCMNSPR-71) Expose client connection pool configuration
+
+---
+
 ## 2026-09-03 v4.0.2 - Release
 
 ### Bug Fixes
