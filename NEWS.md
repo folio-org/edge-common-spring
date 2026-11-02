@@ -1,3 +1,10 @@
+## 2026-11-02 v4.0.4 - Release
+
+### Trillium CSP#1 with dependency upgrades
+* [EDGCMNSPR-72](https://folio-org.atlassian.net/browse/EDGCMNSPR-72) Upgrade to Spring Boot 4.1.1
+
+---
+
 ## 2026-09-24 v4.0.3 - Release
 
 ### Features
